@@ -7,7 +7,7 @@
 class BlockInfo
 {
 public:
-	BlockInfo(BlockType type, const std::string& name);
+	BlockInfo(BlockType type = BTYPE_AIR, const std::string& name = "noname");
 	~BlockInfo();
 
 	BlockType GetType() const;
