@@ -2,6 +2,7 @@
 #include "define.h"
 #include "blockinfo.h"
 #include "blockarray3d.h"
+#include "chunk.h"
 
 int main()
 {
@@ -25,4 +26,7 @@ int main()
 	std::cout << world.Get(1, 1, 1) << std::endl;
 	world.Set(1, 1, 2, BTYPE_DIRT);
 	std::cout << world.Get(1, 1, 2) << std::endl;
+
+	Chunk c1;
+	c1.GetBlock(1, 1, 1);
 }
