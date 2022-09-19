@@ -15,8 +15,10 @@ int main()
 
 	b1.Show();
 
-	std::cout << "Name: " << b2.GetName() << std::endl;
 	std::cout << "Type: " << b2.GetType() << std::endl;
+	std::cout << "Name: " << b2.GetName() << std::endl;
 	std::cout << "Durability: " << b2.GetDurability() << std::endl;
 	b2.Show();
+
+	BlockArray3D* world = new BlockArray3D;
 }

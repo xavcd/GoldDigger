@@ -127,10 +127,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="blockarray3d.cpp" />
     <ClCompile Include="blockinfo.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="blockarray3d.h" />
     <ClInclude Include="blockinfo.h" />
     <ClInclude Include="define.h" />
   </ItemGroup>
