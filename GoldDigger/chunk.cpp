@@ -1,7 +1,7 @@
 #include "chunk.h"
 #include <iostream>
 
-Chunk::Chunk()
+Chunk::Chunk() : BlockArray3D(CHUNK_SIZE_X, CHUNK_SIZE_Y, CHUNK_SIZE_Z)
 {
 }
 

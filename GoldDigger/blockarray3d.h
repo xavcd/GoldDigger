@@ -8,7 +8,7 @@
 class BlockArray3D
 {
 public:
-	BlockArray3D(int x = 1, int y = 1, int z = 1);
+	BlockArray3D(int x, int y, int z);
 	~BlockArray3D();
 
 	void Set(int x, int y, int z, BlockType type);
