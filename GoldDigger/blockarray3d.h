@@ -10,6 +10,7 @@ class BlockArray3D
 public:
 	BlockArray3D(int x, int y, int z);
 	~BlockArray3D();
+	BlockArray3D(const BlockArray3D& array);
 
 	void Set(int x, int y, int z, BlockType type);
 	BlockType Get(int x, int y, int z) const;
