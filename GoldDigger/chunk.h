@@ -1,19 +1,16 @@
 #ifndef CHUNK_H__
 #define CHUNK_H__
+#include "blockarray3d.h"
 
-#include "blockarray3d.h" 
-#include <string>
-
-class Chunk : public BlockArray3D
+class Chunk : public BlockArray3d
 {
-public:
-	Chunk();
-	~Chunk();
+    public:
+    Chunk();
+    ~Chunk();
 
-	void RemoveBlock(int x, int y, int z);
-	void SetBlock(int x, int y, int z, BlockType type);
-	BlockType GetBlock(int x, int y, int z) const;
+    void RemoveBlock(int x, int y, int z);
+    void SetBlock(int x, int y, int z, BlockType type);
+    BlockType GetBlock(int x, int y, int z);
 };
 
-
-#endif
+#endif // CHUNK_H__

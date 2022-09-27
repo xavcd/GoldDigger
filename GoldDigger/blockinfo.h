@@ -1,28 +1,27 @@
 #ifndef BLOCKINFO_H__
 #define BLOCKINFO_H__
 
-#include "define.h"
 #include <string>
+#include "define.h"
 
 class BlockInfo
 {
-public:
-	BlockInfo(BlockType type = BTYPE_AIR, const std::string& name = "noname");
-	~BlockInfo();
+    public:
+    BlockInfo(BlockType type, const std::string& name);
+    ~BlockInfo();
 
-	BlockType GetType() const;
+    BlockType GetType() const;
 
-	const std::string& GetName() const;
+    void SetDurability(int durability);
+    int GetDurability() const;
 
-	int GetDurability() const;
-	void SetDurability(int durability);
+    void Show() const;
 
-	void Show() const;
+    private:
+    BlockType m_type;
+    std::string m_name;
+    int m_durability;
 
-private:
-	BlockType m_type;
-	std::string m_name;
-	int m_durability;
 };
 
-#endif
+#endif // BLOCKINFO_H__
