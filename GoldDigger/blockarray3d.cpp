@@ -6,8 +6,7 @@
 BlockArray3D::BlockArray3D(int x, int y, int z) : m_x(x), m_y(y), m_z(z)
 {
 	m_blocks = new BlockType[m_x*m_y*m_z];
-	for (int i = 0; i < (m_x * m_y * m_z); i++)
-		m_blocks[i] = BTYPE_AIR;
+	Reset(BTYPE_AIR);
 }
 
 BlockArray3D::~BlockArray3D()
@@ -16,11 +15,15 @@ BlockArray3D::~BlockArray3D()
 	std::cout << "dtor" << std::endl; // TEST
 }
 
-BlockArray3D::BlockArray3D (const BlockArray3D& autre) : m_blocks(autre.m_blocks)
+BlockArray3D::BlockArray3D (const BlockArray3D& array)
 {
+	m_x = array.m_x;
+	m_y = array.m_y;
+	m_z = array.m_z;
+
 	m_blocks = new BlockType[m_x * m_y * m_z];
-	for (int i = 0; i < (m_x * m_y * m_z); i++)
-		m_blocks[i] = autre.m_blocks[i];
+	for (int i = 0; i < m_x * m_y * m_z; i++)
+		m_blocks[i] = array.m_blocks[i];
 }
 
 void BlockArray3D::Set(int x, int y, int z, BlockType type)
