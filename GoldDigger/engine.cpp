@@ -68,7 +68,7 @@ void Engine::Render(float elapsedTime)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	// Plancher
+	// PLANCHER
 	// Les vertex doivent etre affiches dans le sens anti-horaire (CCW)
 	m_textureFloor.Bind();
 	float nbRep = 50.f;
@@ -84,31 +84,92 @@ void Engine::Render(float elapsedTime)
 	glVertex3f(-100.f, -2.f, -100.f);
 	glEnd();
 
-	// EXERCICE EN CLASSE:
+	// CUBE
 	m_textureBlock.Bind();   // Charger la texture du cube.
 
+	// Rotation sur lui-même
 	Transformation t;
 	t.ApplyTranslation(0, 0, -5.f);
-	t.ApplyTranslation(sin(gameTime), 0, 0);
-	t.ApplyRotation(gameTime * 100, 0, 0, 1.f);
-
-	static float facteur = 1.f;
-	if (facteur > 0)
-		facteur -= 0.1f * elapsedTime;
-	t.ApplyScale(sin(facteur), sin(facteur), sin(facteur));
+	t.ApplyRotation(gameTime * 100, 1.f, 0, 0);
+	t.ApplyRotation(gameTime * 50, 0, 1.f, 0);
 	t.Use();
 
-	// Quad - Face d'un cube
+	// Face 1 du cube
 	glBegin(GL_QUADS);
 	glNormal3f(0, 0, 1); // Normal vector
 	glTexCoord2f(0, 0);
-	glVertex3f(-0.5f, -0.5f, 0.f);
+	glVertex3f(-0.5f, -0.5f, 0.5f);
 	glTexCoord2f(1, 0);
-	glVertex3f(0.5f, -0.5f, 0.f);
+	glVertex3f(0.5f, -0.5f, 0.5f);
 	glTexCoord2f(1, 1);
-	glVertex3f(0.5f, 0.5f, 0.f);
+	glVertex3f(0.5f, 0.5f, 0.5f);
 	glTexCoord2f(0, 1);
-	glVertex3f(-0.5f, 0.5f, 0.f);
+	glVertex3f(-0.5f, 0.5f, 0.5f);
+	glEnd();
+
+	// Face 2 du cube
+	glBegin(GL_QUADS);
+	glNormal3f(1, 0, 0); // Normal vector
+	glTexCoord2f(0, 0);
+	glVertex3f(0.5f, 0.5f, 0.5f);
+	glTexCoord2f(1, 0);
+	glVertex3f(0.5f, -0.5f, 0.5f);
+	glTexCoord2f(1, 1);
+	glVertex3f(0.5f, -0.5f, -0.5f);
+	glTexCoord2f(0, 1);
+	glVertex3f(0.5f, 0.5f, -0.5f);
+	glEnd();
+
+	// Face 3 du cube
+	glBegin(GL_QUADS);
+	glNormal3f(0, 0, -1); // Normal vector
+	glTexCoord2f(0, 0);
+	glVertex3f(-0.5f, -0.5f, -0.5f);
+	glTexCoord2f(1, 0);
+	glVertex3f(0.5f, -0.5f, -0.5f);
+	glTexCoord2f(1, 1);
+	glVertex3f(0.5f, 0.5f, -0.5f);
+	glTexCoord2f(0, 1);
+	glVertex3f(-0.5f, 0.5f, -0.5f);
+	glEnd();
+
+	// Face 4 du cube
+	glBegin(GL_QUADS);
+	glNormal3f(-1, 0, 0); // Normal vector
+	glTexCoord2f(0, 0);
+	glVertex3f(-0.5f, 0.5f, 0.5f);
+	glTexCoord2f(1, 0);
+	glVertex3f(-0.5f, -0.5f, 0.5f);
+	glTexCoord2f(1, 1);
+	glVertex3f(-0.5f, -0.5f, -0.5f);
+	glTexCoord2f(0, 1);
+	glVertex3f(-0.5f, 0.5f, -0.5f);
+	glEnd();
+
+	// Face 5 du cube
+	glBegin(GL_QUADS);
+	glNormal3f(0, 1, 0); // Normal vector
+	glTexCoord2f(0, 0);
+	glVertex3f(0.5f, 0.5f, 0.5f);
+	glTexCoord2f(1, 0);
+	glVertex3f(0.5f, 0.5f, -0.5f);
+	glTexCoord2f(1, 1);
+	glVertex3f(-0.5f, 0.5f, -0.5f);
+	glTexCoord2f(0, 1);
+	glVertex3f(-0.5f, 0.5f, 0.5f);
+	glEnd();
+
+	// Face 6 du cube
+	glBegin(GL_QUADS);
+	glNormal3f(0, -1, 0); // Normal vector
+	glTexCoord2f(0, 0);
+	glVertex3f(0.5f, -0.5f, 0.5f);
+	glTexCoord2f(1, 0);
+	glVertex3f(0.5f, -0.5f, -0.5f);
+	glTexCoord2f(1, 1);
+	glVertex3f(-0.5f, -0.5f, -0.5f);
+	glTexCoord2f(0, 1);
+	glVertex3f(-0.5f, -0.5f, 0.5f);
 	glEnd();
 }
 
