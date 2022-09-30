@@ -14,7 +14,7 @@ Engine::~Engine()
 
 void Engine::Init()
 {
-	glClearColor(0.1f, 0.6f, 1.0f, 0.9f);
+	glClearColor(0.1f, 0.6f, 1.0f, 0.f);
 	glEnable(GL_TEXTURE_2D);
 
 	glMatrixMode(GL_PROJECTION);
@@ -48,7 +48,7 @@ void Engine::DeInit()
 
 void Engine::LoadResource()
 {
-	LoadTexture(m_textureFloor, TEXTURE_PATH "checker.png");
+	LoadTexture(m_textureFloor, TEXTURE_PATH "grass.jpg");
 	LoadTexture(m_textureBlock, TEXTURE_PATH "dirt.png"); // Texture du cube
 }
 
