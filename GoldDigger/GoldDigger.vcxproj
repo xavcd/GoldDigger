@@ -33,7 +33,7 @@
     <ClCompile Include="transformation.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{A21FD938-1FEA-4687-AB86-0EABAC30877B}</ProjectGuid>
+    <ProjectGuid>{392CE9EE-A34C-457C-B75B-2252ECFFB418}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>mcclone</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
