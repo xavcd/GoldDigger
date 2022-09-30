@@ -49,6 +49,7 @@ void Engine::DeInit()
 void Engine::LoadResource()
 {
 	LoadTexture(m_textureFloor, TEXTURE_PATH "checker.png");
+	LoadTexture(m_textureBlock, TEXTURE_PATH "dirt.png"); // Texture du cube
 }
 
 void Engine::UnloadResource()
@@ -84,41 +85,31 @@ void Engine::Render(float elapsedTime)
 	glEnd();
 
 	// EXERCICE EN CLASSE:
+	m_textureBlock.Bind();   // Charger la texture du cube.
+
 	Transformation t;
 	t.ApplyTranslation(0, 0, -5.f);
-
 	t.ApplyTranslation(sin(gameTime), 0, 0);
-
 	t.ApplyRotation(gameTime * 100, 0, 0, 1.f);
 
 	static float facteur = 1.f;
 	if (facteur > 0)
 		facteur -= 0.1f * elapsedTime;
 	t.ApplyScale(sin(facteur), sin(facteur), sin(facteur));
-
-
 	t.Use();
 
 	// Quad - Face d'un cube
 	glBegin(GL_QUADS);
 	glNormal3f(0, 0, 1); // Normal vector
-
 	glTexCoord2f(0, 0);
-	glVertex3f(-1.f, -1.f, 0.f);
-
-
+	glVertex3f(-0.5f, -0.5f, 0.f);
 	glTexCoord2f(1, 0);
-	glVertex3f(1.f, -1.f, 0.f);
-
+	glVertex3f(0.5f, -0.5f, 0.f);
 	glTexCoord2f(1, 1);
-	glVertex3f(1.f, 1.f, 0.f);
-
-
+	glVertex3f(0.5f, 0.5f, 0.f);
 	glTexCoord2f(0, 1);
-	glVertex3f(-1.f, 1.f, 0.f);
-
+	glVertex3f(-0.5f, 0.5f, 0.f);
 	glEnd();
-
 }
 
 void Engine::KeyPressEvent(unsigned char key)
