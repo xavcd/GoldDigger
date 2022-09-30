@@ -4,7 +4,9 @@
 
 /.vs/GoldDigger
 /GoldDigger/GoldDigger.vcxproj.user
-/Debug/GoldDigger.pdb
+/x64/Debug/GoldDigger.pdb
+/x64/Debug/GoldDigger.exe
 /Debug/GoldDigger.exe
+/Debug/GoldDigger.pdb
 /GoldDigger/x64/Debug
 /.vs
