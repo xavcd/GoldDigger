@@ -3,6 +3,7 @@
 #include "define.h"
 #include "openglcontext.h"
 #include "texture.h"
+#include "player.h"
 
 class Engine : public OpenglContext
 {
@@ -33,6 +34,8 @@ private:
     bool m_keyA = false;
     bool m_keyS = false;
     bool m_keyD = false;
+
+    Player m_player;
 };
 
 #endif // ENGINE_H__

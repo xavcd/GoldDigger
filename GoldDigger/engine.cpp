@@ -4,8 +4,9 @@
 #include <cmath>
 #include <iostream>
 
-Engine::Engine()
+Engine::Engine() :m_player(Vector3f(0.f, 0.f, 5.f), 0.f, 0.f)
 {
+
 }
 
 Engine::~Engine()
@@ -62,11 +63,18 @@ void Engine::Render(float elapsedTime)
 
 	gameTime += elapsedTime;
 
+	m_player.Move(m_keyW, m_keyS, m_keyA, m_keyD, elapsedTime);
+
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Transformations initiales
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+	Transformation c;
+	m_player.ApplyTransformation(c);
+	c.Use();
 
 	// PLANCHER
 	// Les vertex doivent etre affiches dans le sens anti-horaire (CCW)
@@ -88,11 +96,9 @@ void Engine::Render(float elapsedTime)
 	m_textureBlock.Bind();   // Charger la texture du cube.
 
 	// Rotation sur lui-même
-	Transformation t;
-	t.ApplyTranslation(0, 0, -5.f);
-	t.ApplyRotation(gameTime * 100, 1.f, 0, 0);
-	t.ApplyRotation(gameTime * 50, 0, 1.f, 0);
-	t.Use();
+	c.ApplyRotation(gameTime * 100, 1.f, 0, 0);
+	c.ApplyRotation(gameTime * 50, 0, 1.f, 0);
+	c.Use();
 
 	// Face 1 du cube
 	glBegin(GL_QUADS);
@@ -177,6 +183,18 @@ void Engine::KeyPressEvent(unsigned char key)
 {
 	switch (key)
 	{
+	case 0: // A
+		m_keyA = true;
+		break;
+	case 3: // D
+		m_keyD = true;
+		break;
+	case 18: // S
+		m_keyS = true;
+		break;
+	case 22: // W
+		m_keyW = true;
+		break;
 	case 36: // ESC
 		Stop();
 		break;
@@ -192,6 +210,18 @@ void Engine::KeyReleaseEvent(unsigned char key)
 {
 	switch (key)
 	{
+	case 0: // A
+		m_keyA = false;
+		break;
+	case 3: // D
+		m_keyD = false;
+		break;
+	case 18: // S
+		m_keyS = false;
+		break;
+	case 22: // W
+		m_keyW = false;
+		break;
 	case 24: // Y
 		m_wireframe = !m_wireframe;
 		if (m_wireframe)
@@ -211,6 +241,11 @@ void Engine::MouseMoveEvent(int x, int y)
 	// MouseMoveEvent, etc
 	if (x == (Width() / 2) && y == (Height() / 2))
 		return;
+
+	MakeRelativeToCenter(x, y);
+
+	m_player.TurnLeftRight(x);
+	m_player.TurnTopBottom(y);
 
 	CenterMouse();
 }
