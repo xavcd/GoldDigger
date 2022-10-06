@@ -12,11 +12,11 @@ void Player::TurnLeftRight(float value)
 
 void Player::TurnTopBottom(float value)
 {
-	if (m_rotX <= 90 && m_rotX >= -90)
+	if (m_rotX + value < 90 && m_rotX + value > -90)
 		m_rotX += value;
-	else if (m_rotX > 90)
+	else if (m_rotX + value >= 90)
 		m_rotX = 90;
-	else if (m_rotX < -90)
+	else if (m_rotX + value <= -90)
 		m_rotX = -90;
 }
 
