@@ -246,7 +246,6 @@ void Engine::MouseMoveEvent(int x, int y)
 
 	m_player.TurnLeftRight(x);
 	m_player.TurnTopBottom(y);
-
 	CenterMouse();
 }
 
