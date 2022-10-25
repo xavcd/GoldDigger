@@ -15,6 +15,13 @@ Engine::~Engine()
 
 void Engine::Init()
 {
+	GLenum glewErr = glewInit();
+	if (glewErr != GLEW_OK)
+	{
+		std::cerr << " ERREUR GLEW : " << glewGetErrorString(glewErr) << std::endl;
+		abort();
+	}
+
 	glClearColor(0.1f, 0.6f, 1.0f, 0.f);
 	glEnable(GL_TEXTURE_2D);
 
@@ -26,6 +33,7 @@ void Engine::Init()
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LINE_SMOOTH);
+	glEnable(GL_CULL_FACE);
 
 	// Light
 	GLfloat light0Pos[4] = { 0.0f, CHUNK_SIZE_Y, 0.0f, 1.0f };
