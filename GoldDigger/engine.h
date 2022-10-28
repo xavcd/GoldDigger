@@ -4,6 +4,7 @@
 #include "openglcontext.h"
 #include "texture.h"
 #include "player.h"
+#include "shader.h"
 
 class Engine : public OpenglContext
 {
@@ -29,6 +30,7 @@ private:
 
     Texture m_textureFloor;
     Texture m_textureBlock;
+    Shader m_shader01;
 
     bool m_keyW = false;
     bool m_keyA = false;

@@ -20,7 +20,8 @@
 typedef uint8_t BlockType;
 enum BLOCK_TYPE { BTYPE_AIR, BTYPE_DIRT, BTYPE_GRASS };
 
-#define TEXTURE_PATH        "../GoldDigger/media/textures/"
-#define VIEW_DISTANCE       128
+#define SHADER_PATH     "../GoldDigger/media/shaders/"
+#define TEXTURE_PATH    "../GoldDigger/media/textures/"
+#define VIEW_DISTANCE   128
 
 #endif // DEFINE_H__
