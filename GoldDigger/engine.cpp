@@ -59,6 +59,13 @@ void Engine::LoadResource()
 {
 	LoadTexture(m_textureFloor, TEXTURE_PATH "grass.jpg");
 	LoadTexture(m_textureBlock, TEXTURE_PATH "dirt.png"); // Texture du cube
+
+	std::cout << " Loading and compiling shaders ..." << std::endl;
+	if (!m_shader01.Load(SHADER_PATH "shader01.vert", SHADER_PATH "shader01.frag", true))
+	{
+		std::cout << " Failed to load shader " << std::endl;
+		exit(1);
+	}
 }
 
 void Engine::UnloadResource()
