@@ -80,7 +80,6 @@ void Engine::Render(float elapsedTime)
 
 	m_player.Move(m_keyW, m_keyS, m_keyA, m_keyD, elapsedTime);
 
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Transformations initiales
@@ -90,6 +89,12 @@ void Engine::Render(float elapsedTime)
 	Transformation c;
 	m_player.ApplyTransformation(c);
 	c.Use();
+
+	if (m_testChunk.IsDirty())
+		m_testChunk.Update();
+	m_shader01.Use();
+	m_testChunk.Render();
+	Shader::Disable();
 
 	// PLANCHER
 	// Les vertex doivent etre affiches dans le sens anti-horaire (CCW)

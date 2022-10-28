@@ -3,6 +3,12 @@
 
 Chunk::Chunk() : m_blocks(CHUNK_SIZE_X, CHUNK_SIZE_Y, CHUNK_SIZE_Z)
 {
+    m_blocks.Reset(BTYPE_AIR);
+    for (int x = 0; x < CHUNK_SIZE_X; ++x)
+        for (int z = 0; z < CHUNK_SIZE_Z; ++z)
+            for (int y = 0; y < 32; ++y)
+                if (x % 2 == 0 && y % 2 == 0 && z % 2 == 0)
+                    SetBlock(x, y, z, BTYPE_DIRT);
 }
 
 Chunk::~Chunk()
@@ -12,11 +18,13 @@ Chunk::~Chunk()
 void Chunk::RemoveBlock(int x, int y, int z)
 {
     m_blocks.Set(x, y, z, BTYPE_AIR);
+    m_isDirty = true;
 }
 
 void Chunk::SetBlock(int x, int y, int z, BlockType type)
 {
     m_blocks.Set(x, y, z, type);
+    m_isDirty = true;
 }
 
 BlockType Chunk::GetBlock(int x, int y, int z)
@@ -96,11 +104,11 @@ void Chunk::AddBlockToMesh(VertexBuffer::VertexData* vd, int& count, BlockType b
 
 void Chunk::Render() const
 {
-
+    m_vertexBuffer.Render();
 }
 
 bool Chunk::IsDirty() const
 {
-    return false; // Évaluer si le chunk a changé et modifier m_isDirty en fonction du résultat.
+    return m_isDirty;
 }
 
