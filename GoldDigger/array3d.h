@@ -70,5 +70,4 @@ int Array3d<T>::To1dIndex(int x, int y, int z) const
 {
     return x + (z * m_x) + (y * m_z * m_x);
 }
-
 #endif // ARRAY3D_H__
