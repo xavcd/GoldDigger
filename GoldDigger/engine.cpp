@@ -90,6 +90,7 @@ void Engine::Render(float elapsedTime)
 	m_player.ApplyTransformation(c);
 	c.Use();
 
+	m_textureBlock.Bind();
 	if (m_testChunk.IsDirty())
 		m_testChunk.Update();
 	m_shader01.Use();
