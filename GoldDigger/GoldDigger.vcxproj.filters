@@ -56,6 +56,9 @@
     <ClInclude Include="array2d.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="textureatlas.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="blockinfo.cpp">
@@ -89,6 +92,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="vertexbuffer.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="textureatlas.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
