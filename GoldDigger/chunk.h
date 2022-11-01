@@ -1,6 +1,6 @@
 #ifndef CHUNK_H__
 #define CHUNK_H__
-#include "blockarray3d.h"
+#include "array3d.h"
 #include "vertexbuffer.h"
 
 class Chunk
@@ -19,7 +19,7 @@ public:
     void Render() const;
     bool IsDirty() const;
 private:
-    BlockArray3d m_blocks;
+    Array3d<BlockType> m_blocks;
     VertexBuffer m_vertexBuffer;
     bool m_isDirty;
 };
