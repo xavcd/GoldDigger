@@ -24,6 +24,28 @@ int BlockInfo::GetDurability() const
     return m_durability;
 }
 
+void BlockInfo::SetUVW(float u, float v, float w)
+{
+    m_u = u;
+    m_v = v;
+    m_w = w;
+}
+
+float BlockInfo::GetU() const
+{
+    return m_u;
+}
+
+float BlockInfo::GetV() const
+{
+    return m_v;
+}
+
+float BlockInfo::GetW() const
+{
+    return m_w;
+}
+
 void BlockInfo::Show() const
 {
     std::cout << "Type: " << m_type << std::endl;
