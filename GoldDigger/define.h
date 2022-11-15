@@ -18,7 +18,7 @@
 #define CHUNK_SIZE_Z 16
 
 typedef uint8_t BlockType;
-enum BLOCK_TYPE { BTYPE_AIR, BTYPE_DIRT, BTYPE_GRASS };
+enum BLOCK_TYPE { BTYPE_AIR, BTYPE_DIRT, BTYPE_GRASS, BTYPE_STONE, BTYPE_BRICK, BTYPE_LAST };
 
 #define SHADER_PATH     "../GoldDigger/media/shaders/"
 #define TEXTURE_PATH    "../GoldDigger/media/textures/"

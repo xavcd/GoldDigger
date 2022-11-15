@@ -6,6 +6,8 @@
 #include "player.h"
 #include "shader.h"
 #include "chunk.h"
+#include "textureatlas.h"
+#include "blockinfo.h"
 
 class Engine : public OpenglContext
 {
@@ -33,6 +35,8 @@ private:
     Texture m_textureBlock;
     Shader m_shader01;
     Chunk m_testChunk;
+    TextureAtlas m_textureAtlas;
+    BlockInfo *m_blockInfo[BTYPE_LAST];
 
     bool m_keyW = false;
     bool m_keyA = false;

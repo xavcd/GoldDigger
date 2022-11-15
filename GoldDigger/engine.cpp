@@ -4,9 +4,8 @@
 #include <cmath>
 #include <iostream>
 
-Engine::Engine() :m_player(Vector3f(0.f, 0.f, 5.f), 0.f, 0.f)
+Engine::Engine() : m_player(Vector3f(0.f, 0.f, 5.f), 0.f, 0.f), m_textureAtlas(BTYPE_LAST)
 {
-
 }
 
 Engine::~Engine()
@@ -57,14 +56,41 @@ void Engine::DeInit()
 
 void Engine::LoadResource()
 {
-	LoadTexture(m_textureFloor, TEXTURE_PATH "grass.jpg");
-	LoadTexture(m_textureBlock, TEXTURE_PATH "dirt.png"); // Texture du cube
-
 	std::cout << " Loading and compiling shaders ..." << std::endl;
 	if (!m_shader01.Load(SHADER_PATH "shader01.vert", SHADER_PATH "shader01.frag", true))
 	{
 		std::cout << " Failed to load shader " << std::endl;
 		exit(1);
+	}
+
+	LoadTexture(m_textureFloor, TEXTURE_PATH "grass.jpg");
+	LoadTexture(m_textureBlock, TEXTURE_PATH "dirt.png");
+
+	TextureAtlas::TextureIndex texDirtIndex = m_textureAtlas.AddTexture(TEXTURE_PATH "dirt.png");
+	float u, v, w;
+	m_textureAtlas.TextureIndexToCoord(texDirtIndex, u, v, w, w);
+	m_blockInfo[BTYPE_DIRT] = new BlockInfo(BTYPE_DIRT, "dirt");
+	m_blockInfo[BTYPE_DIRT] -> SetUVW(u, v, w);
+
+	TextureAtlas::TextureIndex texGrassIndex = m_textureAtlas.AddTexture(TEXTURE_PATH "grass.jpg");
+	m_textureAtlas.TextureIndexToCoord(texGrassIndex, u, v, w, w);
+	m_blockInfo[BTYPE_GRASS] = new BlockInfo(BTYPE_GRASS, "grass");
+	m_blockInfo[BTYPE_GRASS] -> SetUVW(u, v, w);
+
+	TextureAtlas::TextureIndex texBrickIndex = m_textureAtlas.AddTexture(TEXTURE_PATH "brick.png");
+	m_textureAtlas.TextureIndexToCoord(texBrickIndex, u, v, w, w);
+	m_blockInfo[BTYPE_BRICK] = new BlockInfo(BTYPE_BRICK, "brick");
+	m_blockInfo[BTYPE_BRICK] -> SetUVW(u, v, w);
+
+	TextureAtlas::TextureIndex texStoneIndex = m_textureAtlas.AddTexture(TEXTURE_PATH "stone.png");
+	m_textureAtlas.TextureIndexToCoord(texStoneIndex, u, v, w, w);
+	m_blockInfo[BTYPE_STONE] = new BlockInfo(BTYPE_STONE, "stone");
+	m_blockInfo[BTYPE_STONE] -> SetUVW(u, v, w);
+	
+	if (!m_textureAtlas.Generate(128, false))
+	{
+		std::cout << "Unable to generate texture atlas ..." << std::endl;
+		abort();
 	}
 }
 
@@ -90,9 +116,9 @@ void Engine::Render(float elapsedTime)
 	m_player.ApplyTransformation(c);
 	c.Use();
 
-	m_textureBlock.Bind();
+	m_textureAtlas.Bind();
 	if (m_testChunk.IsDirty())
-		m_testChunk.Update();
+		m_testChunk.Update(m_blockInfo);
 	m_shader01.Use();
 	m_testChunk.Render();
 	Shader::Disable();

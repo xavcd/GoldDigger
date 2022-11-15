@@ -2,6 +2,7 @@
 #define CHUNK_H__
 #include "array3d.h"
 #include "vertexbuffer.h"
+#include "blockinfo.h"
 
 class Chunk
 {
@@ -13,9 +14,9 @@ public:
     void SetBlock(int x, int y, int z, BlockType type);
     BlockType GetBlock(int x, int y, int z);
 
-    void AddBlockToMesh(VertexBuffer::VertexData* vd, int& count, BlockType bt, int x, int y, int z);
+    void AddBlockToMesh(VertexBuffer::VertexData* vd, int& count, BlockType bt, int x, int y, int z, float u, float v, float w);
 
-    void Update();
+    void Update(BlockInfo *blockInfo[BTYPE_LAST]);
     void Render() const;
     bool IsDirty() const;
 private:
