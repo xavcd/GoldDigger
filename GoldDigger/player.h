@@ -10,6 +10,7 @@ public:
 	void TurnTopBottom(float value);
 	void Move(bool front, bool back, bool left, bool right, float elapsedTime);
 	void ApplyTransformation(Transformation& transformation) const;
+	Vector3f Position();
 
 private:
 	float m_rotX = 0.f;
