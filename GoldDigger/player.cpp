@@ -66,3 +66,8 @@ void Player::ApplyTransformation(Transformation& transformation) const
 	transformation.ApplyTranslation(-m_position);
 
 }
+
+Vector3f Player::Position()
+{
+	return m_position;
+}
