@@ -126,15 +126,26 @@ void Engine::Render(float elapsedTime)
 
 	if (m_keySpace && block_under != BTYPE_AIR)
 	{
-			delta.y += 1.8f;
+		m_jump = true;
 	}
+
+	if (m_jump)
+	{
+		delta.y += (0.15f * ++m_nbjump);
+		if (m_nbjump == 5)
+		{
+			m_nbjump = 0;
+			m_jump = false;
+		}
+	}
+
 	if (block_under == BTYPE_AIR)
 	{
-		iGrav++;
-		if (iGrav == 3)
+		m_grav++;
+		if (m_grav == 3)
 		{
 			delta.y -= 0.20f;
-			iGrav = 0;
+			m_grav = 0;
 		}
 	}
 
