@@ -8,6 +8,7 @@
 #include "chunk.h"
 #include "textureatlas.h"
 #include "blockinfo.h"
+#include "array2d.h"
 
 class Engine : public OpenglContext
 {
@@ -42,6 +43,7 @@ private:
 	Chunk m_testChunk;
 	TextureAtlas m_textureAtlas;
 	BlockInfo* m_blockInfo[BTYPE_LAST];
+	Array2d<Chunk*> m_array2d;
 
 	bool m_keyW = false;
 	bool m_keyA = false;
