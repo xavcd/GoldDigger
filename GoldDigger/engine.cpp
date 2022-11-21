@@ -4,7 +4,7 @@
 #include <cmath>
 #include <iostream>
 
-Engine::Engine() : m_player(Vector3f(0.f, 0.f, 5.f), 0.f, 0.f), m_textureAtlas(BTYPE_LAST), m_array2d((VIEW_DISTANCE * 2) / CHUNK_SIZE_X, (VIEW_DISTANCE * 2) / CHUNK_SIZE_Z)
+Engine::Engine() : m_player(Vector3f(0.f, 0.f, 5.f), 0.f, 0.f), m_textureAtlas(BTYPE_LAST), m_array2d((VIEW_DISTANCE * 2) / CHUNK_SIZE_X, (VIEW_DISTANCE * 2) / CHUNK_SIZE_Z), m_testChunk(CHUNK_SIZE_X, CHUNK_SIZE_Z)
 {
 }
 
@@ -61,6 +61,14 @@ void Engine::LoadResource()
 	{
 		std::cout << " Failed to load shader " << std::endl;
 		exit(1);
+	}
+
+	for (int x = 0; x < (VIEW_DISTANCE * 2) / CHUNK_SIZE_X; x++)
+	{
+		for (int z = 0; z < (VIEW_DISTANCE * 2) / CHUNK_SIZE_Z; z++)
+		{
+			m_array2d.Set(x, z, new Chunk(x * CHUNK_SIZE_X, z * CHUNK_SIZE_Z));
+		}
 	}
 
 	LoadTexture(m_textureFloor, TEXTURE_PATH "grass.jpg");

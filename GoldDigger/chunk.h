@@ -7,7 +7,7 @@
 class Chunk
 {
 public:
-    Chunk();
+    Chunk(float x, float z);
     ~Chunk();
 
     void RemoveBlock(int x, int y, int z);
