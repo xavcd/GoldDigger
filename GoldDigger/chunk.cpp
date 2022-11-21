@@ -1,7 +1,7 @@
 #include "chunk.h"
 #include <iostream>
 
-Chunk::Chunk() : m_blocks(CHUNK_SIZE_X, CHUNK_SIZE_Y, CHUNK_SIZE_Z)
+Chunk::Chunk(float x, float z) : m_blocks(CHUNK_SIZE_X, CHUNK_SIZE_Y, CHUNK_SIZE_Z)
 {
 	m_blocks.Reset(BTYPE_AIR);
 	for (int x = 0; x < CHUNK_SIZE_X; ++x)
