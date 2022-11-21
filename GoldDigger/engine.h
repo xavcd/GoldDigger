@@ -50,12 +50,14 @@ private:
 	BlockInfo* m_blockInfo[BTYPE_LAST];
 	Array2d<Chunk*> m_array2d;
 
-	int iGrav = 0;
+	int m_grav = 0;
+	int m_nbjump = 0;
 	bool m_keyW = false;
 	bool m_keyA = false;
 	bool m_keyS = false;
 	bool m_keyD = false;
 	bool m_keySpace = false;
+	bool m_jump = false;
 
 	Player m_player;
 };
