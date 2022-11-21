@@ -20,15 +20,16 @@ void Player::TurnTopBottom(float value)
 		m_rotX = -90;
 }
 
-void Player::Move(bool front, bool back, bool left, bool right, float elapsedTime)
+Vector3f Player::SimulateMove(bool front, bool back, bool left, bool right, float elapsedTime)
 {
+	Vector3f delta(0, 0, 0);
 	if (front)
 	{
 		float xrotrad, yrotrad;
 		yrotrad = (m_rotY / 180 * 3.141592654f);
 		xrotrad = (m_rotX / 180 * 3.141592654f);
-		m_position.x += float(sin(yrotrad)) * elapsedTime * 20;
-		m_position.z -= float(cos(yrotrad)) * elapsedTime * 20;
+		delta.x += float(sin(yrotrad)) * elapsedTime * 20;
+		delta.z -= float(cos(yrotrad)) * elapsedTime * 20;
 	}
 
 	if (back)
@@ -36,27 +37,27 @@ void Player::Move(bool front, bool back, bool left, bool right, float elapsedTim
 		float xrotrad, yrotrad;
 		yrotrad = (m_rotY / 180 * 3.141592654f);
 		xrotrad = (m_rotX / 180 * 3.141592654f);
-		m_position.x -= float(sin(yrotrad)) * elapsedTime * 20;
-		m_position.z += float(cos(yrotrad)) * elapsedTime * 20;
+		delta.x -= float(sin(yrotrad)) * elapsedTime * 20;
+		delta.z += float(cos(yrotrad)) * elapsedTime * 20;
 	}
 
 	if (right)
 	{
 		float yrotrad;
 		yrotrad = (m_rotY / 180 * 3.141592654f);
-		m_position.x += float(cos(yrotrad)) * elapsedTime * 15;
-		m_position.z += float(sin(yrotrad)) * elapsedTime * 15;
+		delta.x += float(cos(yrotrad)) * elapsedTime * 15;
+		delta.z += float(sin(yrotrad)) * elapsedTime * 15;
 	}
 
 	if (left)
 	{
 		float yrotrad;
 		yrotrad = (m_rotY / 180 * 3.141592654f);
-		m_position.x -= float(cos(yrotrad)) * elapsedTime * 15;
-		m_position.z -= float(sin(yrotrad)) * elapsedTime * 15;
+		delta.x -= float(cos(yrotrad)) * elapsedTime * 15;
+		delta.z -= float(sin(yrotrad)) * elapsedTime * 15;
 	}
 
-
+	return delta;
 }
 
 void Player::ApplyTransformation(Transformation& transformation) const
@@ -65,6 +66,11 @@ void Player::ApplyTransformation(Transformation& transformation) const
 	transformation.ApplyRotation(-m_rotY, 0, 1.f, 0);
 	transformation.ApplyTranslation(-m_position);
 
+}
+
+void Player::SetPosition(Vector3f position)
+{
+	m_position = position;
 }
 
 Vector3f Player::Position()
