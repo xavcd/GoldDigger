@@ -4,7 +4,7 @@
 #include <cmath>
 #include <iostream>
 
-Engine::Engine() : m_player(Vector3f(0.f, 0.f, 5.f), 0.f, 0.f), m_textureAtlas(BTYPE_LAST), m_array2d((VIEW_DISTANCE * 2) / CHUNK_SIZE_X, (VIEW_DISTANCE * 2) / CHUNK_SIZE_Z)
+Engine::Engine() : m_player(Vector3f(50.f, 4.8f, 50.f), 0.f, 0.f), m_textureAtlas(BTYPE_LAST), m_array2d((VIEW_DISTANCE * 2) / CHUNK_SIZE_X, (VIEW_DISTANCE * 2) / CHUNK_SIZE_Z)
 {
 }
 
@@ -121,7 +121,22 @@ void Engine::Render(float elapsedTime)
 	c.Use();
 
 	Vector3f pos = m_player.Position();
-	Vector3f delta = m_player.SimulateMove(m_keyW, m_keyS, m_keyA, m_keyD, elapsedTime);
+	Vector3f delta = m_player.SimulateMove(m_keyW, m_keyS, m_keyA, m_keyD, m_keySpace, elapsedTime);
+	BlockType block_under = BlockAt(pos.x, pos.y + delta.y - 1.9f, pos.z, BTYPE_AIR);
+
+	if (m_keySpace && block_under != BTYPE_AIR)
+	{
+			delta.y += 1.8f;
+	}
+	if (block_under == BTYPE_AIR)
+	{
+		iGrav++;
+		if (iGrav == 3)
+		{
+			delta.y -= 0.20f;
+			iGrav = 0;
+		}
+	}
 
 	BlockType bt1, bt2, bt3;
 	// Collision par rapport au déplacement en x:
@@ -146,39 +161,28 @@ void Engine::Render(float elapsedTime)
 	pos += delta;
 	m_player.SetPosition(pos);
 
+	c.ApplyTranslation(.5f, .5f, .5f);
+
+	// Chunks
 	m_textureAtlas.Bind();
 	m_shader01.Use();
 	for (int x = 0; x < (VIEW_DISTANCE * 2) / CHUNK_SIZE_X; x++)
 		for (int z = 0; z < (VIEW_DISTANCE * 2) / CHUNK_SIZE_Z; z++)
 		{
-			if (m_array2d.Get(x,z)->IsDirty())
+			if (m_array2d.Get(x, z)->IsDirty())
 				m_array2d.Get(x, z)->Update(m_blockInfo);
 			m_array2d.Get(x, z)->Render();
 		}
 
 	Shader::Disable();
 
-	// PLANCHER
-	// Les vertex doivent etre affiches dans le sens anti-horaire (CCW)
-	m_textureFloor.Bind();
-	float nbRep = 50.f;
-	glBegin(GL_QUADS);
-	glNormal3f(0, 1, 0); // Normal vector
-	glTexCoord2f(0, 0);
-	glVertex3f(-100.f, -2.f, 100.f);
-	glTexCoord2f(nbRep, 0);
-	glVertex3f(100.f, -2.f, 100.f);
-	glTexCoord2f(nbRep, nbRep);
-	glVertex3f(100.f, -2.f, -100.f);
-	glTexCoord2f(0, nbRep);
-	glVertex3f(-100.f, -2.f, -100.f);
-	glEnd();
-
 	if (m_wireframe)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	DrawHud();
 	if (m_wireframe)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	m_keySpace = false;
 }
 
 void Engine::DrawHud()
@@ -252,6 +256,9 @@ void Engine::KeyPressEvent(unsigned char key)
 		break;
 	case 36: // ESC
 		Stop();
+		break;
+	case 57: // Space
+		m_keySpace = true;
 		break;
 	case 94: // F10
 		SetFullscreen(!IsFullscreen());
