@@ -28,8 +28,6 @@ template <class T>
 Array2d<T>::Array2d(int x, int y) : m_x(x), m_y(y)
 {
     m_blocks = new T[m_x * m_y];
-
-    Reset(BTYPE_AIR);
 }
 
 template <class T>
