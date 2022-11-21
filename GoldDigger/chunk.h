@@ -23,6 +23,8 @@ private:
     Array3d<BlockType> m_blocks;
     VertexBuffer m_vertexBuffer;
     bool m_isDirty;
+    float m_posx;
+    float m_posz;
 };
 
 #endif // CHUNK_H__

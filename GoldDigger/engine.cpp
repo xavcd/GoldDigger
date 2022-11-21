@@ -4,7 +4,7 @@
 #include <cmath>
 #include <iostream>
 
-Engine::Engine() : m_player(Vector3f(0.f, 0.f, 5.f), 0.f, 0.f), m_textureAtlas(BTYPE_LAST), m_array2d((VIEW_DISTANCE * 2) / CHUNK_SIZE_X, (VIEW_DISTANCE * 2) / CHUNK_SIZE_Z), m_testChunk(CHUNK_SIZE_X, CHUNK_SIZE_Z)
+Engine::Engine() : m_player(Vector3f(0.f, 0.f, 5.f), 0.f, 0.f), m_textureAtlas(BTYPE_LAST), m_array2d((VIEW_DISTANCE * 2) / CHUNK_SIZE_X, (VIEW_DISTANCE * 2) / CHUNK_SIZE_Z)
 {
 }
 
@@ -64,12 +64,8 @@ void Engine::LoadResource()
 	}
 
 	for (int x = 0; x < (VIEW_DISTANCE * 2) / CHUNK_SIZE_X; x++)
-	{
 		for (int z = 0; z < (VIEW_DISTANCE * 2) / CHUNK_SIZE_Z; z++)
-		{
 			m_array2d.Set(x, z, new Chunk(x * CHUNK_SIZE_X, z * CHUNK_SIZE_Z));
-		}
-	}
 
 	LoadTexture(m_textureFloor, TEXTURE_PATH "grass.jpg");
 	LoadTexture(m_textureBlock, TEXTURE_PATH "dirt.png");
@@ -80,23 +76,23 @@ void Engine::LoadResource()
 	float u, v, w;
 	m_textureAtlas.TextureIndexToCoord(texDirtIndex, u, v, w, w);
 	m_blockInfo[BTYPE_DIRT] = new BlockInfo(BTYPE_DIRT, "dirt");
-	m_blockInfo[BTYPE_DIRT] -> SetUVW(u, v, w);
+	m_blockInfo[BTYPE_DIRT]->SetUVW(u, v, w);
 
 	TextureAtlas::TextureIndex texGrassIndex = m_textureAtlas.AddTexture(TEXTURE_PATH "grass.jpg");
 	m_textureAtlas.TextureIndexToCoord(texGrassIndex, u, v, w, w);
 	m_blockInfo[BTYPE_GRASS] = new BlockInfo(BTYPE_GRASS, "grass");
-	m_blockInfo[BTYPE_GRASS] -> SetUVW(u, v, w);
+	m_blockInfo[BTYPE_GRASS]->SetUVW(u, v, w);
 
 	TextureAtlas::TextureIndex texBrickIndex = m_textureAtlas.AddTexture(TEXTURE_PATH "brick.png");
 	m_textureAtlas.TextureIndexToCoord(texBrickIndex, u, v, w, w);
 	m_blockInfo[BTYPE_BRICK] = new BlockInfo(BTYPE_BRICK, "brick");
-	m_blockInfo[BTYPE_BRICK] -> SetUVW(u, v, w);
+	m_blockInfo[BTYPE_BRICK]->SetUVW(u, v, w);
 
 	TextureAtlas::TextureIndex texStoneIndex = m_textureAtlas.AddTexture(TEXTURE_PATH "stone.png");
 	m_textureAtlas.TextureIndexToCoord(texStoneIndex, u, v, w, w);
 	m_blockInfo[BTYPE_STONE] = new BlockInfo(BTYPE_STONE, "stone");
-	m_blockInfo[BTYPE_STONE] -> SetUVW(u, v, w);
-	
+	m_blockInfo[BTYPE_STONE]->SetUVW(u, v, w);
+
 	if (!m_textureAtlas.Generate(128, false))
 	{
 		std::cout << "Unable to generate texture atlas ..." << std::endl;
@@ -114,8 +110,6 @@ void Engine::Render(float elapsedTime)
 
 	gameTime += elapsedTime;
 
-	m_player.Move(m_keyW, m_keyS, m_keyA, m_keyD, elapsedTime);
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Transformations initiales
@@ -126,11 +120,42 @@ void Engine::Render(float elapsedTime)
 	m_player.ApplyTransformation(c);
 	c.Use();
 
+	Vector3f pos = m_player.Position();
+	Vector3f delta = m_player.SimulateMove(m_keyW, m_keyS, m_keyA, m_keyD, elapsedTime);
+
+	BlockType bt1, bt2, bt3;
+	// Collision par rapport au déplacement en x:
+	bt1 = BlockAt(pos.x + delta.x, pos.y, pos.z, BTYPE_AIR);
+	bt2 = BlockAt(pos.x + delta.x, pos.y - 0.9f, pos.z, BTYPE_AIR);
+	bt3 = BlockAt(pos.x + delta.x, pos.y - 1.7f, pos.z, BTYPE_AIR);
+	if (bt1 != BTYPE_AIR || bt2 != BTYPE_AIR || bt3 != BTYPE_AIR)
+		delta.x = 0;
+	// Collision par rapport au déplacement en y:
+	bt1 = BlockAt(pos.x, pos.y + delta.y, pos.z, BTYPE_AIR);
+	bt2 = BlockAt(pos.x, pos.y + delta.y - 0.9f, pos.z, BTYPE_AIR);
+	bt3 = BlockAt(pos.x, pos.y + delta.y - 1.7f, pos.z, BTYPE_AIR);
+	if (bt1 != BTYPE_AIR || bt2 != BTYPE_AIR || bt3 != BTYPE_AIR)
+		delta.y = 0;
+	// Collision par rapport au déplacement en z:
+	bt1 = BlockAt(pos.x, pos.y, pos.z + delta.z, BTYPE_AIR);
+	bt2 = BlockAt(pos.x, pos.y - 0.9f, pos.z + delta.z, BTYPE_AIR);
+	bt3 = BlockAt(pos.x, pos.y - 1.7f, pos.z + delta.z, BTYPE_AIR);
+	if (bt1 != BTYPE_AIR || bt2 != BTYPE_AIR || bt3 != BTYPE_AIR)
+		delta.z = 0;
+
+	pos += delta;
+	m_player.SetPosition(pos);
+
 	m_textureAtlas.Bind();
-	if (m_testChunk.IsDirty())
-		m_testChunk.Update(m_blockInfo);
 	m_shader01.Use();
-	m_testChunk.Render();
+	for (int x = 0; x < (VIEW_DISTANCE * 2) / CHUNK_SIZE_X; x++)
+		for (int z = 0; z < (VIEW_DISTANCE * 2) / CHUNK_SIZE_Z; z++)
+		{
+			if (m_array2d.Get(x,z)->IsDirty())
+				m_array2d.Get(x, z)->Update(m_blockInfo);
+			m_array2d.Get(x, z)->Render();
+		}
+
 	Shader::Disable();
 
 	// PLANCHER
@@ -323,4 +348,38 @@ void Engine::PrintText(unsigned int x, unsigned int y, const std::string& t)
 		glEnd();
 		glTranslated(8, 0, 0);
 	}
+}
+
+template <class T>
+Chunk* Engine::ChunkAt(T x, T y, T z) const
+{
+	int cx = (int)x / CHUNK_SIZE_X;
+	int cz = (int)z / CHUNK_SIZE_Z;
+
+	if ((x > VIEW_DISTANCE * 2 || z > VIEW_DISTANCE * 2) || (x < 0 || z < 0))
+		return nullptr;
+
+	return m_array2d.Get(cx, cz);
+}
+
+
+template <class T>
+Chunk* Engine::ChunkAt(const Vector3<T>& pos) const
+{
+	return ChunkAt(pos.x, pos.y, pos.z);
+}
+
+template <class T>
+BlockType Engine::BlockAt(T x, T y, T z, BlockType defaultBlockType) const
+{
+	Chunk* c = ChunkAt(x, y, z);
+
+	if (!c)
+		return defaultBlockType;
+
+	int bx = (int)x % CHUNK_SIZE_X;
+	int by = (int)y % CHUNK_SIZE_Y;
+	int bz = (int)z % CHUNK_SIZE_Z;
+
+	return c->GetBlock(bx, by, bz);
 }

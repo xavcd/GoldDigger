@@ -28,6 +28,12 @@ public:
 	virtual void MousePressEvent(const MOUSE_BUTTON& button, int x, int y);
 	virtual void MouseReleaseEvent(const MOUSE_BUTTON& button, int x, int y);
 	virtual void PrintText(unsigned int x, unsigned int y, const std::string& t);
+	template <class T>
+	Chunk* ChunkAt(T x, T y, T z) const;
+	template <class T>
+	Chunk* ChunkAt(const Vector3<T>& pos) const;
+	template <class T>
+	BlockType BlockAt(T x, T y, T z, BlockType defaultBlockType) const;
 
 private:
 	bool LoadTexture(Texture& texture, const std::string& filename, bool stopOnError = true);
@@ -40,7 +46,6 @@ private:
 	Texture m_textureCrosshair;
 	Texture m_textureFont;
 	Shader m_shader01;
-	Chunk m_testChunk;
 	TextureAtlas m_textureAtlas;
 	BlockInfo* m_blockInfo[BTYPE_LAST];
 	Array2d<Chunk*> m_array2d;
