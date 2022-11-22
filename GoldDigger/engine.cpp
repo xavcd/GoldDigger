@@ -123,9 +123,7 @@ void Engine::Render(float elapsedTime)
 	BlockType block_under = BlockAt(pos.x, pos.y + delta.y - 1.9f, pos.z, BTYPE_AIR);
 
 	if (m_keySpace && block_under != BTYPE_AIR)
-	{
 		m_jump = true;
-	}
 
 	if (m_jump)
 	{
@@ -142,7 +140,7 @@ void Engine::Render(float elapsedTime)
 		m_grav++;
 		if (m_grav == 3)
 		{
-			delta.y -= 0.20f;
+			delta.y -= 0.25f;
 			m_grav = 0;
 		}
 	}
