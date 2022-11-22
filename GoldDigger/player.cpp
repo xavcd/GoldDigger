@@ -20,7 +20,7 @@ void Player::TurnTopBottom(float value)
 		m_rotX = -90;
 }
 
-Vector3f Player::SimulateMove(bool front, bool back, bool left, bool right, bool up, float elapsedTime)
+Vector3f Player::SimulateMove(bool front, bool back, bool left, bool right, float elapsedTime)
 {
 	Vector3f delta(0, 0, 0);
 	if (front)
@@ -55,10 +55,6 @@ Vector3f Player::SimulateMove(bool front, bool back, bool left, bool right, bool
 		yrotrad = (m_rotY / 180 * 3.141592654f);
 		delta.x -= float(cos(yrotrad)) * elapsedTime * 7;
 		delta.z -= float(sin(yrotrad)) * elapsedTime * 7;
-	}
-
-	if (up)
-	{
 	}
 
 	return delta;

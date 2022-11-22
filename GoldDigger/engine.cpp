@@ -106,6 +106,10 @@ void Engine::UnloadResource()
 
 void Engine::Render(float elapsedTime)
 {
+	if (elapsedTime > .2f)
+	{
+		return;
+	}
 	static float gameTime = elapsedTime;
 
 	gameTime += elapsedTime;
@@ -116,34 +120,17 @@ void Engine::Render(float elapsedTime)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	
+
 
 	Vector3f pos = m_player.Position();
-	Vector3f delta = m_player.SimulateMove(m_keyW, m_keyS, m_keyA, m_keyD, m_keySpace, elapsedTime);
+	Vector3f delta = m_player.SimulateMove(m_keyW, m_keyS, m_keyA, m_keyD, elapsedTime);
 	BlockType block_under = BlockAt(pos.x, pos.y + delta.y - 1.9f, pos.z, BTYPE_AIR);
 
-	if (m_keySpace && block_under != BTYPE_AIR)
-		m_jump = true;
+	// Gravité
+	delta.y -= elapsedTime * 6;
 
-	if (m_jump)
-	{
-		delta.y += (0.15f * ++m_nbjump);
-		if (m_nbjump == 5)
-		{
-			m_nbjump = 0;
-			m_jump = false;
-		}
-	}
-
-	if (block_under == BTYPE_AIR)
-	{
-		m_grav++;
-		if (m_grav == 3)
-		{
-			delta.y -= 0.25f;
-			m_grav = 0;
-		}
-	}
+	delta.y += m_velocity * elapsedTime;
+	m_velocity *= 0.9f;
 
 	BlockType bt1, bt2, bt3;
 	// Collision par rapport au déplacement en x:
@@ -164,6 +151,11 @@ void Engine::Render(float elapsedTime)
 	bt3 = BlockAt(pos.x, pos.y - 1.7f, pos.z + delta.z, BTYPE_AIR);
 	if (bt1 != BTYPE_AIR || bt2 != BTYPE_AIR || bt3 != BTYPE_AIR)
 		delta.z = 0;
+
+	if (block_under != BTYPE_AIR)
+		m_jump = true;
+	else
+		m_jump = false;
 
 	pos += delta;
 	m_player.SetPosition(pos);
@@ -192,8 +184,6 @@ void Engine::Render(float elapsedTime)
 	DrawHud();
 	if (m_wireframe)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	m_keySpace = false;
 }
 
 void Engine::DrawHud()
@@ -279,7 +269,8 @@ void Engine::KeyPressEvent(unsigned char key)
 		Stop();
 		break;
 	case 57: // Space
-		m_keySpace = true;
+		if (m_jump)
+			m_velocity = 20.f;
 		break;
 	case 94: // F10
 		SetFullscreen(!IsFullscreen());
