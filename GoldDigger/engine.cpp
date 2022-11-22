@@ -244,7 +244,17 @@ void Engine::DrawHud()
 
 float Engine::GetFps()
 {
-	float fps = 0;
+	static float framesPerSecond = 0.0f;
+	static int fps;
+	static float lastTime = 0.0f;
+	float currentTime = GetTickCount() * 0.001f;
+	++framesPerSecond;
+	if (currentTime - lastTime > 1.0f)
+	{
+		lastTime = currentTime;
+		fps = (int)framesPerSecond;
+		framesPerSecond = 0;
+	}
 
 	return fps;
 }
