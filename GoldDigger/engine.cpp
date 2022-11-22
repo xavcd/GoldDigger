@@ -116,9 +116,7 @@ void Engine::Render(float elapsedTime)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	Transformation c;
-	m_player.ApplyTransformation(c);
-	c.Use();
+	
 
 	Vector3f pos = m_player.Position();
 	Vector3f delta = m_player.SimulateMove(m_keyW, m_keyS, m_keyA, m_keyD, m_keySpace, elapsedTime);
@@ -172,7 +170,11 @@ void Engine::Render(float elapsedTime)
 	pos += delta;
 	m_player.SetPosition(pos);
 
+
+	Transformation c;
+	m_player.ApplyTransformation(c);
 	c.ApplyTranslation(.5f, .5f, .5f);
+	c.Use();
 
 	// Chunks
 	m_textureAtlas.Bind();
