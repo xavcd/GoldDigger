@@ -66,7 +66,7 @@ Chunk::Chunk(float x, float z) : m_blocks(CHUNK_SIZE_X, CHUNK_SIZE_Y, CHUNK_SIZE
 						SetBlock(x, y + 2, z + 3, BTYPE_DIRT);
 					}
 				}
-				else if (GetBlock(x,y,z) != BTYPE_BRICK && GetBlock(x, y, z) != BTYPE_STONE && GetBlock(x, y, z) != BTYPE_GRASS && GetBlock(x, y, z) != BTYPE_DIRT)
+				else if (GetBlock(x, y, z) != BTYPE_BRICK && GetBlock(x, y, z) != BTYPE_STONE && GetBlock(x, y, z) != BTYPE_GRASS && GetBlock(x, y, z) != BTYPE_DIRT)
 				{
 					SetBlock(x, y, z, BTYPE_AIR);
 				}
@@ -138,35 +138,53 @@ void Chunk::Update(BlockInfo* blockInfo[BTYPE_LAST])
 void Chunk::AddBlockToMesh(VertexBuffer::VertexData* vd, int& count, BlockType bt, int x, int y, int z, float u, float v, float w)
 {
 	// front
-	vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y - .5f, m_posz + z + .5f, 1.f, 1.f, 1.f, u, v);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y - .5f, m_posz + z + .5f, 1.f, 1.f, 1.f, u + w, v);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y + .5f, m_posz + z + .5f, 1.f, 1.f, 1.f, u + w, v + w);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y + .5f, m_posz + z + .5f, 1.f, 1.f, 1.f, u, v + w);
-	// right
-	vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y - .5f, m_posz + z + .5f, .9f, .9f, .9f, u, v);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y - .5f, m_posz + z - .5f, .9f, .9f, .9f, u + w, v);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y + .5f, m_posz + z - .5f, .9f, .9f, .9f, u + w, v + w);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y + .5f, m_posz + z + .5f, .9f, .9f, .9f, u, v + w);
+	if (CHUNK_SIZE_Z - 1 == z || m_blocks.Get(x, y, z + 1) == BTYPE_AIR)
+	{
+		vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y - .5f, m_posz + z + .5f, 1.f, 1.f, 1.f, u, v);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y - .5f, m_posz + z + .5f, 1.f, 1.f, 1.f, u + w, v);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y + .5f, m_posz + z + .5f, 1.f, 1.f, 1.f, u + w, v + w);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y + .5f, m_posz + z + .5f, 1.f, 1.f, 1.f, u, v + w);
+	}
 	// back
-	vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y - .5f, m_posz + z - .5f, 1.f, 1.f, 1.f, u, v);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y - .5f, m_posz + z - .5f, 1.f, 1.f, 1.f, u + w, v);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y + .5f, m_posz + z - .5f, 1.f, 1.f, 1.f, u + w, v + w);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y + .5f, m_posz + z - .5f, 1.f, 1.f, 1.f, u, v + w);
+	if (z == 0 || m_blocks.Get(x, y, z - 1) == BTYPE_AIR)
+	{
+		vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y - .5f, m_posz + z - .5f, 1.f, 1.f, 1.f, u, v);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y - .5f, m_posz + z - .5f, 1.f, 1.f, 1.f, u + w, v);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y + .5f, m_posz + z - .5f, 1.f, 1.f, 1.f, u + w, v + w);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y + .5f, m_posz + z - .5f, 1.f, 1.f, 1.f, u, v + w);
+	}
+	// right
+	if (x == 0 || m_blocks.Get(x + 1, y, z) == BTYPE_AIR)
+	{
+		vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y - .5f, m_posz + z + .5f, .9f, .9f, .9f, u, v);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y - .5f, m_posz + z - .5f, .9f, .9f, .9f, u + w, v);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y + .5f, m_posz + z - .5f, .9f, .9f, .9f, u + w, v + w);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y + .5f, m_posz + z + .5f, .9f, .9f, .9f, u, v + w);
+	}
 	// left
-	vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y - .5f, m_posz + z - .5f, .9f, .9f, .9f, u, v);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y - .5f, m_posz + z + .5f, .9f, .9f, .9f, u + w, v);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y + .5f, m_posz + z + .5f, .9f, .9f, .9f, u + w, v + w);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y + .5f, m_posz + z - .5f, .9f, .9f, .9f, u, v + w);
+	if (CHUNK_SIZE_X - 1 == x || m_blocks.Get(x - 1, y, z) == BTYPE_AIR)
+	{
+		vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y - .5f, m_posz + z - .5f, .9f, .9f, .9f, u, v);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y - .5f, m_posz + z + .5f, .9f, .9f, .9f, u + w, v);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y + .5f, m_posz + z + .5f, .9f, .9f, .9f, u + w, v + w);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y + .5f, m_posz + z - .5f, .9f, .9f, .9f, u, v + w);
+	}
 	// top
-	vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y + .5f, m_posz + z + .5f, .8f, .8f, .8f, u + w, v);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y + .5f, m_posz + z - .5f, .8f, .8f, .8f, u + w, v + w);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y + .5f, m_posz + z - .5f, .8f, .8f, .8f, u, v + w);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y + .5f, m_posz + z + .5f, .8f, .8f, .8f, u, v);
+	if (CHUNK_SIZE_Y - 1 == y || m_blocks.Get(x, y + 1, z) == BTYPE_AIR)
+	{
+		vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y + .5f, m_posz + z + .5f, .8f, .8f, .8f, u + w, v);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y + .5f, m_posz + z - .5f, .8f, .8f, .8f, u + w, v + w);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y + .5f, m_posz + z - .5f, .8f, .8f, .8f, u, v + w);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y + .5f, m_posz + z + .5f, .8f, .8f, .8f, u, v);
+	}
 	// bottom
-	vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y - .5f, m_posz + z - .5f, .8f, .8f, .8f, u, v);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y - .5f, m_posz + z - .5f, .8f, .8f, .8f, u + w, v);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y - .5f, m_posz + z + .5f, .8f, .8f, .8f, u + w, v + w);
-	vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y - .5f, m_posz + z + .5f, .8f, .8f, .8f, u, v + w);
+	if (y == 0 || m_blocks.Get(x, y - 1, z) == BTYPE_AIR)
+	{
+		vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y - .5f, m_posz + z - .5f, .8f, .8f, .8f, u, v);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y - .5f, m_posz + z - .5f, .8f, .8f, .8f, u + w, v);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x + .5f, y - .5f, m_posz + z + .5f, .8f, .8f, .8f, u + w, v + w);
+		vd[count++] = VertexBuffer::VertexData(m_posx + x - .5f, y - .5f, m_posz + z + .5f, .8f, .8f, .8f, u, v + w);
+	}
 }
 
 void Chunk::Render() const
