@@ -11,8 +11,65 @@ Chunk::Chunk(float x, float z) : m_blocks(CHUNK_SIZE_X, CHUNK_SIZE_Y, CHUNK_SIZE
 					SetBlock(x, y, z, BTYPE_DIRT);
 				else if (y == 2)
 					SetBlock(x, y, z, BTYPE_GRASS);
-				else
+				else if (y == 3)
+				{
+					// Faire l'escalier
+					if (x == 6 && z == 6)
+					{
+						SetBlock(x, y, z, BTYPE_STONE);
+						SetBlock(x + 1, y + 1, z, BTYPE_STONE);
+						SetBlock(x + 2, y + 2, z, BTYPE_STONE);
+						SetBlock(x + 3, y + 3, z, BTYPE_STONE);
+					}
+					// Faire l'arche
+					if (x == 1 && z == 12)
+					{
+						SetBlock(x, y, z, BTYPE_BRICK);
+						SetBlock(x, y + 1, z, BTYPE_BRICK);
+						SetBlock(x, y + 2, z, BTYPE_BRICK);
+						SetBlock(x + 1, y + 2, z, BTYPE_BRICK);
+						SetBlock(x + 2, y + 2, z, BTYPE_BRICK);
+						SetBlock(x + 2, y + 1, z, BTYPE_BRICK);
+						SetBlock(x + 2, y, z, BTYPE_BRICK);
+					}
+					// Faire mur en x
+					if (x == 10 && z == 5)
+					{
+						SetBlock(x, y, z, BTYPE_DIRT);
+						SetBlock(x + 1, y, z, BTYPE_DIRT);
+						SetBlock(x + 2, y, z, BTYPE_DIRT);
+						SetBlock(x + 3, y, z, BTYPE_DIRT);
+						SetBlock(x, y + 1, z, BTYPE_DIRT);
+						SetBlock(x + 1, y + 1, z, BTYPE_DIRT);
+						SetBlock(x + 2, y + 1, z, BTYPE_DIRT);
+						SetBlock(x + 3, y + 1, z, BTYPE_DIRT);
+						SetBlock(x, y + 2, z, BTYPE_DIRT);
+						SetBlock(x + 1, y + 2, z, BTYPE_DIRT);
+						SetBlock(x + 2, y + 2, z, BTYPE_DIRT);
+						SetBlock(x + 3, y + 2, z, BTYPE_DIRT);
+					}
+
+					// Faire mur en z
+					if (x == 13 && z == 9)
+					{
+						SetBlock(x, y, z, BTYPE_DIRT);
+						SetBlock(x, y, z + 1, BTYPE_DIRT);
+						SetBlock(x, y, z + 2, BTYPE_DIRT);
+						SetBlock(x, y, z + 3, BTYPE_DIRT);
+						SetBlock(x, y + 1, z, BTYPE_DIRT);
+						SetBlock(x, y + 1, z + 1, BTYPE_DIRT);
+						SetBlock(x, y + 1, z + 2, BTYPE_DIRT);
+						SetBlock(x, y + 1, z + 3, BTYPE_DIRT);
+						SetBlock(x, y + 2, z, BTYPE_DIRT);
+						SetBlock(x, y + 2, z + 1, BTYPE_DIRT);
+						SetBlock(x, y + 2, z + 2, BTYPE_DIRT);
+						SetBlock(x, y + 2, z + 3, BTYPE_DIRT);
+					}
+				}
+				else if (GetBlock(x,y,z) != BTYPE_BRICK && GetBlock(x, y, z) != BTYPE_STONE && GetBlock(x, y, z) != BTYPE_GRASS && GetBlock(x, y, z) != BTYPE_DIRT)
+				{
 					SetBlock(x, y, z, BTYPE_AIR);
+				}
 }
 
 Chunk::~Chunk()

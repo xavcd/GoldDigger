@@ -28,8 +28,8 @@ Vector3f Player::SimulateMove(bool front, bool back, bool left, bool right, bool
 		float xrotrad, yrotrad;
 		yrotrad = (m_rotY / 180 * 3.141592654f);
 		xrotrad = (m_rotX / 180 * 3.141592654f);
-		delta.x += float(sin(yrotrad)) * elapsedTime * 20;
-		delta.z -= float(cos(yrotrad)) * elapsedTime * 20;
+		delta.x += float(sin(yrotrad)) * elapsedTime * 10;
+		delta.z -= float(cos(yrotrad)) * elapsedTime * 10;
 	}
 
 	if (back)
@@ -37,24 +37,24 @@ Vector3f Player::SimulateMove(bool front, bool back, bool left, bool right, bool
 		float xrotrad, yrotrad;
 		yrotrad = (m_rotY / 180 * 3.141592654f);
 		xrotrad = (m_rotX / 180 * 3.141592654f);
-		delta.x -= float(sin(yrotrad)) * elapsedTime * 20;
-		delta.z += float(cos(yrotrad)) * elapsedTime * 20;
+		delta.x -= float(sin(yrotrad)) * elapsedTime * 10;
+		delta.z += float(cos(yrotrad)) * elapsedTime * 10;
 	}
 
 	if (right)
 	{
 		float yrotrad;
 		yrotrad = (m_rotY / 180 * 3.141592654f);
-		delta.x += float(cos(yrotrad)) * elapsedTime * 15;
-		delta.z += float(sin(yrotrad)) * elapsedTime * 15;
+		delta.x += float(cos(yrotrad)) * elapsedTime * 7;
+		delta.z += float(sin(yrotrad)) * elapsedTime * 7;
 	}
 
 	if (left)
 	{
 		float yrotrad;
 		yrotrad = (m_rotY / 180 * 3.141592654f);
-		delta.x -= float(cos(yrotrad)) * elapsedTime * 15;
-		delta.z -= float(sin(yrotrad)) * elapsedTime * 15;
+		delta.x -= float(cos(yrotrad)) * elapsedTime * 7;
+		delta.z -= float(sin(yrotrad)) * elapsedTime * 7;
 	}
 
 	if (up)
