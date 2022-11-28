@@ -120,8 +120,6 @@ void Engine::Render(float elapsedTime)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-
-
 	Vector3f pos = m_player.Position();
 	Vector3f delta = m_player.SimulateMove(m_keyW, m_keyS, m_keyA, m_keyD, m_sprint, elapsedTime);
 	BlockType block_under = BlockAt(pos.x, pos.y + delta.y - 1.9f, pos.z, BTYPE_AIR);
@@ -205,6 +203,27 @@ void Engine::DrawHud()
 	std::ostringstream ss;
 	ss << " Fps : " << GetFps();
 	PrintText(10, Height() - 25, ss.str());
+	ss.str("");
+	std::string sbtype = "";
+	switch (m_selectedBlockType)
+	{
+	case 1:
+		sbtype = "Dirt";
+		break;
+	case 2:
+		sbtype = "Grass";
+		break;
+	case 3:
+		sbtype = "Stone";
+		break;
+	case 4:
+		sbtype = "Bricks";
+		break;
+	default:
+		break;
+	}
+	ss << "Selected block : " << sbtype;
+	PrintText(Width() / 2 - 72, 50, ss.str());
 	ss.str("");
 	ss << " Position : " << m_player.Position(); // IMPORTANT : on utilise l ’ operateur << pour afficher la position
 	PrintText(10, 10, ss.str());
@@ -371,6 +390,12 @@ void Engine::KeyPressEvent(unsigned char key)
 	case 3: // D
 		m_keyD = true;
 		break;
+	case 4: // E
+		if (m_selectedBlockType <= 3)
+			m_selectedBlockType += 1;
+		else
+			m_selectedBlockType = 1;
+		break;
 	case 18: // S
 		m_keyS = true;
 		break;
@@ -453,81 +478,23 @@ void Engine::MousePressEvent(const MOUSE_BUTTON& button, int x, int y)
 	{
 	case 1:
 		if (posx >= 0 && posy >= 0 && posz >= 0)
-			if (posx >= 16 && posz < 16)
-				c->RemoveBlock(posx % 16, posy, posz);
-			else if (posx < 16 && posz >= 16)
-				c->RemoveBlock(posx, posy, posz % 16);
-			else if (posx >= 16 && posz >= 16)
-				c->RemoveBlock(posx % 16, posy, posz % 16);
-			else
-				c->RemoveBlock(posx, posy, posz);
+			c->RemoveBlock(posx % 16, posy, posz % 16);
 		break;
 	case 4:
 		if (posx >= 0 && posy >= 0 && posz >= 0)
 		{
-
-			if (posx >= 16 && posz < 16)
-			{
-				if (m_currentFaceNormal.x > 0)
-					c->SetBlock((posx + 1) % 16, posy, posz, BTYPE_DIRT);
-				else if (m_currentFaceNormal.x < 0)
-					c->SetBlock((posx - 1) % 16, posy, posz, BTYPE_DIRT);
-				else if (m_currentFaceNormal.y < 0)
-					c->SetBlock(posx % 16, posy - 1, posz, BTYPE_DIRT);
-				else if (m_currentFaceNormal.y > 0)
-					c->SetBlock(posx % 16, posy + 1, posz, BTYPE_DIRT);
-				else if (m_currentFaceNormal.z > 0)
-					c->SetBlock(posx % 16, posy, posz + 1, BTYPE_DIRT);
-				else if (m_currentFaceNormal.z < 0)
-					c->SetBlock(posx % 16, posy, posz - 1, BTYPE_DIRT);
-			}
-			else if (posx < 16 && posz >= 16)
-			{
-
-				if (m_currentFaceNormal.x > 0)
-					c->SetBlock(posx + 1, posy, posz % 16, BTYPE_DIRT);
-				else if (m_currentFaceNormal.x < 0)
-					c->SetBlock(posx - 1, posy, posz % 16, BTYPE_DIRT);
-				else if (m_currentFaceNormal.y < 0)
-					c->SetBlock(posx, posy - 1, posz % 16, BTYPE_DIRT);
-				else if (m_currentFaceNormal.y > 0)
-					c->SetBlock(posx, posy + 1, posz % 16, BTYPE_DIRT);
-				else if (m_currentFaceNormal.z > 0)
-					c->SetBlock(posx, posy, (posz + 1) % 16, BTYPE_DIRT);
-				else if (m_currentFaceNormal.z < 0)
-					c->SetBlock(posx, posy, (posz - 1) % 16, BTYPE_DIRT);
-			}
-			else if (posx >= 16 && posz >= 16)
-			{
-				if (m_currentFaceNormal.x > 0)
-					c->SetBlock((posx + 1) % 16, posy, posz % 16, BTYPE_DIRT);
-				else if (m_currentFaceNormal.x < 0)
-					c->SetBlock((posx - 1) % 16, posy, posz % 16, BTYPE_DIRT);
-				else if (m_currentFaceNormal.y < 0)
-					c->SetBlock(posx % 16, posy - 1, posz % 16, BTYPE_DIRT);
-				else if (m_currentFaceNormal.y > 0)
-					c->SetBlock(posx % 16, posy + 1, posz % 16, BTYPE_DIRT);
-				else if (m_currentFaceNormal.z > 0)
-					c->SetBlock(posx % 16, posy, (posz + 1) % 16, BTYPE_DIRT);
-				else if (m_currentFaceNormal.z < 0)
-					c->SetBlock(posx % 16, posy, (posz - 1) % 16, BTYPE_DIRT);
-			}
-			else
-			{
-
-				if (m_currentFaceNormal.x > 0)
-					c->SetBlock(posx + 1, posy, posz, BTYPE_DIRT);
-				else if (m_currentFaceNormal.x < 0)
-					c->SetBlock(posx - 1, posy, posz, BTYPE_DIRT);
-				else if (m_currentFaceNormal.y < 0)
-					c->SetBlock(posx, posy - 1, posz, BTYPE_DIRT);
-				else if (m_currentFaceNormal.y > 0)
-					c->SetBlock(posx, posy + 1, posz, BTYPE_DIRT);
-				else if (m_currentFaceNormal.z > 0)
-					c->SetBlock(posx, posy, posz + 1, BTYPE_DIRT);
-				else if (m_currentFaceNormal.z < 0)
-					c->SetBlock(posx, posy, posz - 1, BTYPE_DIRT);
-			}
+			if (m_currentFaceNormal.x > 0)
+				c->SetBlock((posx + 1) % 16, posy, posz % 16, m_selectedBlockType);
+			else if (m_currentFaceNormal.x < 0)
+				c->SetBlock((posx - 1) % 16, posy, posz % 16, m_selectedBlockType);
+			else if (m_currentFaceNormal.y < 0)
+				c->SetBlock(posx % 16, posy - 1, posz % 16, m_selectedBlockType);
+			else if (m_currentFaceNormal.y > 0)
+				c->SetBlock(posx % 16, posy + 1, posz % 16, m_selectedBlockType);
+			else if (m_currentFaceNormal.z > 0)
+				c->SetBlock(posx % 16, posy, (posz + 1) % 16, m_selectedBlockType);
+			else if (m_currentFaceNormal.z < 0)
+				c->SetBlock(posx % 16, posy, (posz - 1) % 16, m_selectedBlockType);
 		}
 		break;
 	default:

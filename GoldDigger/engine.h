@@ -54,6 +54,7 @@ private:
 	Array2d<Chunk*> m_array2d;
 	Vector3f m_currentBlock;
 	Vector3f m_currentFaceNormal;
+	BlockType m_selectedBlockType = BTYPE_DIRT;
 
 	float m_velocity = 0.0f;
 	bool m_keyW = false;
