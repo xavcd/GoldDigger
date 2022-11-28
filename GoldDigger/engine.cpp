@@ -304,7 +304,9 @@ void Engine::GetBlocAtCursor()
 						m_currentBlock.y = y;
 						m_currentBlock.z = z;
 
-						if (InRangeWithEpsilon((float)posX, (float)x, (float)x + 1.f, 0.05f) && InRangeWithEpsilon((float)posY, (float)y, (float)y + 1.f, 0.05f) && InRangeWithEpsilon((float)posZ, (float)z, (float)z + 1.f, 0.05f))
+						if (InRangeWithEpsilon((float)posX, (float)x, (float)x + 1.f, 0.05f) &&
+							InRangeWithEpsilon((float)posY, (float)y, (float)y + 1.f, 0.05f) &&
+							InRangeWithEpsilon((float)posZ, (float)z, (float)z + 1.f, 0.05f))
 						{
 							found = true;
 						}
@@ -435,10 +437,18 @@ void Engine::MouseMoveEvent(int x, int y)
 
 void Engine::MousePressEvent(const MOUSE_BUTTON& button, int x, int y)
 {
+	Vector3f pos = m_player.Position();
+	Chunk* c = ChunkAt(pos.x, pos.y, pos.z);
 	switch (button)
 	{
-	case MOUSE_BUTTON_LEFT:
-
+	case 1:
+		GetBlocAtCursor();
+		if (m_currentBlock.x > 0 && m_currentBlock.y > 0 && m_currentBlock.z > 0)
+			c->RemoveBlock(m_currentBlock.x, m_currentBlock.y, m_currentBlock.z);
+		break;
+	case 4:
+		if (m_currentFaceNormal.y > 0)
+			c->SetBlock(m_currentBlock.x, m_currentBlock.y + 1, m_currentBlock.z, BTYPE_DIRT);
 		break;
 	default:
 		break;
