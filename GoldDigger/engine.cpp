@@ -440,8 +440,8 @@ void Engine::MousePressEvent(const MOUSE_BUTTON& button, int x, int y)
 	GetBlocAtCursor();
 	Vector3f pos = m_currentBlock;
 	Chunk* c = ChunkAt(pos.x, pos.y, pos.z);
-	int posx = pos.x; 
-	int posy = pos.y; 
+	int posx = pos.x;
+	int posy = pos.y;
 	int posz = pos.z;
 	switch (button)
 	{
@@ -454,11 +454,75 @@ void Engine::MousePressEvent(const MOUSE_BUTTON& button, int x, int y)
 			else if (posx >= 16 && posz >= 16)
 				c->RemoveBlock(posx % 16, posy, posz % 16);
 			else
-				c->RemoveBlock(m_currentBlock.x, m_currentBlock.y, m_currentBlock.z);
+				c->RemoveBlock(posx, posy, posz);
 		break;
 	case 4:
-		if (m_currentFaceNormal.y > 0)
-			c->SetBlock(m_currentBlock.x, m_currentBlock.y + 1, m_currentBlock.z, BTYPE_DIRT);
+		if (posx >= 0 && posy >= 0 && posz >= 0)
+		{
+
+			if (posx >= 16 && posz < 16)
+			{
+				if (m_currentFaceNormal.x > 0)
+					c->SetBlock((posx + 1) % 16, posy, posz, BTYPE_DIRT);
+				else if (m_currentFaceNormal.x < 0)
+					c->SetBlock((posx - 1) % 16, posy, posz, BTYPE_DIRT);
+				else if (m_currentFaceNormal.y < 0)
+					c->SetBlock(posx % 16, posy - 1, posz, BTYPE_DIRT);
+				else if (m_currentFaceNormal.y > 0)
+					c->SetBlock(posx % 16, posy + 1, posz, BTYPE_DIRT);
+				else if (m_currentFaceNormal.z > 0)
+					c->SetBlock(posx % 16, posy, posz + 1, BTYPE_DIRT);
+				else if (m_currentFaceNormal.z < 0)
+					c->SetBlock(posx % 16, posy, posz - 1, BTYPE_DIRT);
+			}
+			else if (posx < 16 && posz >= 16)
+			{
+
+				if (m_currentFaceNormal.x > 0)
+					c->SetBlock(posx + 1, posy, posz % 16, BTYPE_DIRT);
+				else if (m_currentFaceNormal.x < 0)
+					c->SetBlock(posx - 1, posy, posz % 16, BTYPE_DIRT);
+				else if (m_currentFaceNormal.y < 0)
+					c->SetBlock(posx, posy - 1, posz % 16, BTYPE_DIRT);
+				else if (m_currentFaceNormal.y > 0)
+					c->SetBlock(posx, posy + 1, posz % 16, BTYPE_DIRT);
+				else if (m_currentFaceNormal.z > 0)
+					c->SetBlock(posx, posy, (posz + 1) % 16, BTYPE_DIRT);
+				else if (m_currentFaceNormal.z < 0)
+					c->SetBlock(posx, posy, (posz - 1) % 16, BTYPE_DIRT);
+			}
+			else if (posx >= 16 && posz >= 16)
+			{
+				if (m_currentFaceNormal.x > 0)
+					c->SetBlock((posx + 1) % 16, posy, posz % 16, BTYPE_DIRT);
+				else if (m_currentFaceNormal.x < 0)
+					c->SetBlock((posx - 1) % 16, posy, posz % 16, BTYPE_DIRT);
+				else if (m_currentFaceNormal.y < 0)
+					c->SetBlock(posx % 16, posy - 1, posz % 16, BTYPE_DIRT);
+				else if (m_currentFaceNormal.y > 0)
+					c->SetBlock(posx % 16, posy + 1, posz % 16, BTYPE_DIRT);
+				else if (m_currentFaceNormal.z > 0)
+					c->SetBlock(posx % 16, posy, (posz + 1) % 16, BTYPE_DIRT);
+				else if (m_currentFaceNormal.z < 0)
+					c->SetBlock(posx % 16, posy, (posz - 1) % 16, BTYPE_DIRT);
+			}
+			else
+			{
+
+				if (m_currentFaceNormal.x > 0)
+					c->SetBlock(posx + 1, posy, posz, BTYPE_DIRT);
+				else if (m_currentFaceNormal.x < 0)
+					c->SetBlock(posx - 1, posy, posz, BTYPE_DIRT);
+				else if (m_currentFaceNormal.y < 0)
+					c->SetBlock(posx, posy - 1, posz, BTYPE_DIRT);
+				else if (m_currentFaceNormal.y > 0)
+					c->SetBlock(posx, posy + 1, posz, BTYPE_DIRT);
+				else if (m_currentFaceNormal.z > 0)
+					c->SetBlock(posx, posy, posz + 1, BTYPE_DIRT);
+				else if (m_currentFaceNormal.z < 0)
+					c->SetBlock(posx, posy, posz - 1, BTYPE_DIRT);
+			}
+		}
 		break;
 	default:
 		break;
