@@ -123,7 +123,7 @@ void Engine::Render(float elapsedTime)
 
 
 	Vector3f pos = m_player.Position();
-	Vector3f delta = m_player.SimulateMove(m_keyW, m_keyS, m_keyA, m_keyD, elapsedTime);
+	Vector3f delta = m_player.SimulateMove(m_keyW, m_keyS, m_keyA, m_keyD, m_sprint, elapsedTime);
 	BlockType block_under = BlockAt(pos.x, pos.y + delta.y - 1.9f, pos.z, BTYPE_AIR);
 
 	// Gravité
@@ -380,6 +380,9 @@ void Engine::KeyPressEvent(unsigned char key)
 	case 36: // ESC
 		Stop();
 		break;
+	case 38: // Shift
+		m_sprint = true;
+		break;
 	case 57: // Space
 		if (m_jump)
 			m_velocity = 20.f;
@@ -414,6 +417,9 @@ void Engine::KeyReleaseEvent(unsigned char key)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		else
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		break;
+	case 38: // Shift
+		m_sprint = false;
 		break;
 	}
 }
