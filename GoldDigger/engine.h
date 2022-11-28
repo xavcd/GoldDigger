@@ -28,6 +28,9 @@ public:
 	virtual void MousePressEvent(const MOUSE_BUTTON& button, int x, int y);
 	virtual void MouseReleaseEvent(const MOUSE_BUTTON& button, int x, int y);
 	virtual void PrintText(unsigned int x, unsigned int y, const std::string& t);
+	static bool EqualWithEpsilon(float v1, float v2, float epsilon = 0.0001f);
+	static bool InRangeWithEpsilon(float v, float vinf, float vsup, float epsilon = 0.0001f);
+	virtual void GetBlocAtCursor();
 	template <class T>
 	Chunk* ChunkAt(T x, T y, T z) const;
 	template <class T>
@@ -49,6 +52,8 @@ private:
 	TextureAtlas m_textureAtlas;
 	BlockInfo* m_blockInfo[BTYPE_LAST];
 	Array2d<Chunk*> m_array2d;
+	Vector3f m_currentBlock;
+	Vector3f m_currentFaceNormal;
 
 	float m_velocity = 0.0f;
 	bool m_keyW = false;
