@@ -61,6 +61,7 @@ private:
 	bool m_keyS = false;
 	bool m_keyD = false;
 	bool m_jump = false;
+	bool m_sprint = false;
 
 	Player m_player;
 };
