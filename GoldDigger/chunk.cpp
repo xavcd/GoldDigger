@@ -1,75 +1,36 @@
 #include "chunk.h"
 #include <iostream>
 
-Chunk::Chunk(float x, float z) : m_blocks(CHUNK_SIZE_X, CHUNK_SIZE_Y, CHUNK_SIZE_Z), m_posx(x), m_posz(z)
+Chunk::Chunk(float x, float z) : m_blocks(CHUNK_SIZE_X, CHUNK_SIZE_Y, CHUNK_SIZE_Z), m_posx(x), m_posz(z), m_perlin(16, 6, 1, 95)
 {
 	m_blocks.Reset(BTYPE_AIR);
-	for (int y = 0; y < CHUNK_SIZE_Y; ++y)
-		for (int x = 0; x < CHUNK_SIZE_X; ++x)
-			for (int z = 0; z < CHUNK_SIZE_Z; ++z)
-				if (y < 2)
-					SetBlock(x, y, z, BTYPE_DIRT);
-				else if (y == 2)
-					SetBlock(x, y, z, BTYPE_GRASS);
-				else if (y == 3)
-				{
-					// Faire l'escalier
-					if (x == 6 && z == 6)
-					{
-						SetBlock(x, y, z, BTYPE_STONE);
-						SetBlock(x + 1, y + 1, z, BTYPE_STONE);
-						SetBlock(x + 2, y + 2, z, BTYPE_STONE);
-						SetBlock(x + 3, y + 3, z, BTYPE_STONE);
-					}
-					// Faire l'arche
-					if (x == 1 && z == 12)
-					{
-						SetBlock(x, y, z, BTYPE_BRICK);
-						SetBlock(x, y + 1, z, BTYPE_BRICK);
-						SetBlock(x, y + 2, z, BTYPE_BRICK);
-						SetBlock(x + 1, y + 2, z, BTYPE_BRICK);
-						SetBlock(x + 2, y + 2, z, BTYPE_BRICK);
-						SetBlock(x + 2, y + 1, z, BTYPE_BRICK);
-						SetBlock(x + 2, y, z, BTYPE_BRICK);
-					}
-					// Faire mur en x
-					if (x == 10 && z == 5)
-					{
-						SetBlock(x, y, z, BTYPE_DIRT);
-						SetBlock(x + 1, y, z, BTYPE_DIRT);
-						SetBlock(x + 2, y, z, BTYPE_DIRT);
-						SetBlock(x + 3, y, z, BTYPE_DIRT);
-						SetBlock(x, y + 1, z, BTYPE_DIRT);
-						SetBlock(x + 1, y + 1, z, BTYPE_DIRT);
-						SetBlock(x + 2, y + 1, z, BTYPE_DIRT);
-						SetBlock(x + 3, y + 1, z, BTYPE_DIRT);
-						SetBlock(x, y + 2, z, BTYPE_DIRT);
-						SetBlock(x + 1, y + 2, z, BTYPE_DIRT);
-						SetBlock(x + 2, y + 2, z, BTYPE_DIRT);
-						SetBlock(x + 3, y + 2, z, BTYPE_DIRT);
-					}
+	for (int x = 0; x < CHUNK_SIZE_X; ++x)
+	{
+		for (int z = 0; z < CHUNK_SIZE_Z; ++z)
+		{
+			// La méthode Get accepte deux parametre ( coordonnée en X et Z) et retourne une valeur qui respecte
+			// les valeurs utilisées lors de la création de l’objet Perlin
+			// La valeur retournée est entre -1 et 1
 
-					// Faire mur en z
-					if (x == 13 && z == 9)
-					{
-						SetBlock(x, y, z, BTYPE_DIRT);
-						SetBlock(x, y, z + 1, BTYPE_DIRT);
-						SetBlock(x, y, z + 2, BTYPE_DIRT);
-						SetBlock(x, y, z + 3, BTYPE_DIRT);
-						SetBlock(x, y + 1, z, BTYPE_DIRT);
-						SetBlock(x, y + 1, z + 1, BTYPE_DIRT);
-						SetBlock(x, y + 1, z + 2, BTYPE_DIRT);
-						SetBlock(x, y + 1, z + 3, BTYPE_DIRT);
-						SetBlock(x, y + 2, z, BTYPE_DIRT);
-						SetBlock(x, y + 2, z + 1, BTYPE_DIRT);
-						SetBlock(x, y + 2, z + 2, BTYPE_DIRT);
-						SetBlock(x, y + 2, z + 3, BTYPE_DIRT);
-					}
-				}
-				else if (GetBlock(x, y, z) != BTYPE_BRICK && GetBlock(x, y, z) != BTYPE_STONE && GetBlock(x, y, z) != BTYPE_GRASS && GetBlock(x, y, z) != BTYPE_DIRT)
-				{
-					SetBlock(x, y, z, BTYPE_AIR);
-				}
+			float val = m_perlin.Get((float)(m_posx * CHUNK_SIZE_X + x) / 2000.f, (float)(m_posz * CHUNK_SIZE_Z + z) / 2000.f);
+			val = val * 10 + (CHUNK_SIZE_Y /2);
+
+			for (int y = 0; y < val; ++y)
+			{
+				if (y < 40)
+					SetBlock(x, y, z, BTYPE_STONE);
+				else if (y >= 40 && y < 60)
+					SetBlock(x, y, z, BTYPE_DIRT);
+				else if (y > 60 && y < 80)
+					SetBlock(x, y, z, BTYPE_GRASS);
+
+				// Utiliser val pour déterminer la hauteur du terrain à la position x,z
+				// Vous devez vous assurer que la hauteur ne dépasse pas CHUNK_SIZE_Y
+				// Remplir les blocs du bas du terrain jusqu’à la hauteur calculée.
+				// N’hésitez pas à jouer avec la valeur retournée pour obtenir un résultat qui vous semble satisfaisant
+			}
+		}
+	}
 }
 
 Chunk::~Chunk()
