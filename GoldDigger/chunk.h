@@ -3,6 +3,7 @@
 #include "array3d.h"
 #include "vertexbuffer.h"
 #include "blockinfo.h"
+#include "perlin.h"
 
 class Chunk
 {
@@ -22,6 +23,7 @@ public:
 private:
     Array3d<BlockType> m_blocks;
     VertexBuffer m_vertexBuffer;
+    Perlin m_perlin;
     bool m_isDirty;
     float m_posx;
     float m_posz;

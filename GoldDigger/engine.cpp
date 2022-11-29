@@ -4,7 +4,7 @@
 #include <cmath>
 #include <iostream>
 
-Engine::Engine() : m_player(Vector3f(50.f, 4.8f, 50.f), 0.f, 0.f), m_textureAtlas(BTYPE_LAST), m_array2d((VIEW_DISTANCE * 2) / CHUNK_SIZE_X, (VIEW_DISTANCE * 2) / CHUNK_SIZE_Z)
+Engine::Engine() : m_player(Vector3f(50.f, 120.8f, 50.f), 0.f, 0.f), m_textureAtlas(BTYPE_LAST), m_array2d((VIEW_DISTANCE * 2) / CHUNK_SIZE_X, (VIEW_DISTANCE * 2) / CHUNK_SIZE_Z)
 {
 }
 
@@ -289,7 +289,6 @@ void Engine::DrawHud()
 	{
 
 	}
-
 }
 
 bool Engine::EqualWithEpsilon(float v1, float v2, float epsilon)
