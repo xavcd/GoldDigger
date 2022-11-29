@@ -22,6 +22,7 @@ public:
 	virtual void Render(float elapsedTime);
 	virtual void DrawHud();
 	virtual float GetFps();
+	virtual void GetInventory();
 	virtual void KeyPressEvent(unsigned char key);
 	virtual void KeyReleaseEvent(unsigned char key);
 	virtual void MouseMoveEvent(int x, int y);
@@ -49,6 +50,10 @@ private:
 	Texture m_textureCrosshair;
 	Texture m_textureFont;
 	Texture m_textureHotbar;
+	Texture m_textureDirt;
+	Texture m_textureStone;
+	Texture m_textureGrass;
+	Texture m_textureBrick;
 	Shader m_shader01;
 	TextureAtlas m_textureAtlas;
 	BlockInfo* m_blockInfo[BTYPE_LAST];
@@ -56,6 +61,7 @@ private:
 	Vector3f m_currentBlock;
 	Vector3f m_currentFaceNormal;
 	BlockType m_selectedBlockType = BTYPE_DIRT;
+	BlockType m_inventory[29];
 
 	float m_velocity = 0.0f;
 	bool m_keyW = false;
@@ -64,6 +70,7 @@ private:
 	bool m_keyD = false;
 	bool m_jump = false;
 	bool m_sprint = false;
+	bool m_inventoryOpen = false;
 
 	Player m_player;
 };

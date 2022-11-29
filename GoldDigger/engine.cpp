@@ -72,6 +72,12 @@ void Engine::LoadResource()
 	LoadTexture(m_textureCrosshair, TEXTURE_PATH "cross.bmp");
 	LoadTexture(m_textureFont, TEXTURE_PATH "font.bmp");
 	LoadTexture(m_textureHotbar, TEXTURE_PATH "toolbar.bmp");
+	LoadTexture(m_textureDirt, TEXTURE_PATH "dirt.bmp");
+	LoadTexture(m_textureStone, TEXTURE_PATH "stone.bmp");
+	LoadTexture(m_textureBrick, TEXTURE_PATH "bricks.bmp");
+	LoadTexture(m_textureGrass, TEXTURE_PATH "grass.bmp");
+
+
 
 	TextureAtlas::TextureIndex texDirtIndex = m_textureAtlas.AddTexture(TEXTURE_PATH "dirt.png");
 	float u, v, w;
@@ -156,9 +162,13 @@ void Engine::Render(float elapsedTime)
 	else
 		m_jump = false;
 
-	pos += delta;
-	m_player.SetPosition(pos);
+	if (!m_inventoryOpen)
+	{
+		pos += delta;
+		m_player.SetPosition(pos);
+	}
 
+	GetInventory();
 
 	Transformation c;
 	m_player.ApplyTransformation(c);
@@ -183,89 +193,103 @@ void Engine::Render(float elapsedTime)
 	DrawHud();
 	if (m_wireframe)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	GetBlocAtCursor();
 }
 
 void Engine::DrawHud()
 {
-	// Setter le blend function , tout ce qui sera noir sera transparent
-	glDisable(GL_LIGHTING);
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-	glEnable(GL_BLEND);
-	glDisable(GL_DEPTH_TEST);
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	glOrtho(0, Width(), 0, Height(), -1, 1);
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	// Bind de la texture pour le font
-	m_textureFont.Bind();
-	std::ostringstream ss;
-	ss << " Fps : " << GetFps();
-	PrintText(10, Height() - 25, ss.str());
-	ss.str("");
-	std::string sbtype = "";
-	switch (m_selectedBlockType)
+	if (!m_inventoryOpen)
 	{
-	case 1:
-		sbtype = "Dirt";
-		break;
-	case 2:
-		sbtype = "Grass";
-		break;
-	case 3:
-		sbtype = "Stone";
-		break;
-	case 4:
-		sbtype = "Bricks";
-		break;
-	default:
-		break;
+		// Setter le blend function , tout ce qui sera noir sera transparent
+		glDisable(GL_LIGHTING);
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		glEnable(GL_BLEND);
+		glDisable(GL_DEPTH_TEST);
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+		glLoadIdentity();
+		glOrtho(0, Width(), 0, Height(), -1, 1);
+		glMatrixMode(GL_MODELVIEW);
+		glPushMatrix();
+		// Bind de la texture pour le font
+		m_textureFont.Bind();
+		std::ostringstream ss;
+		ss << " Fps : " << GetFps();
+		PrintText(10, Height() - 25, ss.str());
+		ss.str("");
+		std::string sbtype = "";
+		switch (m_selectedBlockType)
+		{
+		case 1:
+			sbtype = "Dirt";
+			break;
+		case 2:
+			sbtype = "Grass";
+			break;
+		case 3:
+			sbtype = "Stone";
+			break;
+		case 4:
+			sbtype = "Bricks";
+			break;
+		default:
+			break;
+		}
+		ss << "Selected block : " << sbtype;
+		PrintText(Width() / 2 - 72, Height() / 4, ss.str());
+		ss.str("");
+		ss << " Position : " << m_player.Position(); // IMPORTANT : on utilise l ’ operateur << pour afficher la position
+		PrintText(10, 10, ss.str());
+		// Affichage de la barre d'outils
+		switch (m_selectedBlockType)
+		{
+		default:
+			m_textureHotbar.Bind();
+			break;
+		}
+		static const int vertHotbarSize = 100;
+		static const int horizHotbarSize = 630;
+		glLoadIdentity();
+		glTranslated(Width() / 2 - horizHotbarSize / 2, Height() / 2 - vertHotbarSize / 2 - Height() / 3, 0);
+		glBegin(GL_QUADS);
+		glTexCoord2f(0, 0);
+		glVertex2i(0, 0);
+		glTexCoord2f(1, 0);
+		glVertex2i(horizHotbarSize, 0);
+		glTexCoord2f(1, 1);
+		glVertex2i(horizHotbarSize, vertHotbarSize);
+		glTexCoord2f(0, 1);
+		glVertex2i(0, vertHotbarSize);
+		glEnd();
+		// Affichage du crosshair
+		m_textureCrosshair.Bind();
+		static const int crossSize = 32;
+		glLoadIdentity();
+		glTranslated(Width() / 2 - crossSize / 2, Height() / 2 - crossSize / 2, 0);
+		glBegin(GL_QUADS);
+		glTexCoord2f(0, 0);
+		glVertex2i(0, 0);
+		glTexCoord2f(1, 0);
+		glVertex2i(crossSize, 0);
+		glTexCoord2f(1, 1);
+		glVertex2i(crossSize, crossSize);
+		glTexCoord2f(0, 1);
+		glVertex2i(0, crossSize);
+		glEnd();
+		glEnable(GL_LIGHTING);
+		glDisable(GL_BLEND);
+		glEnable(GL_DEPTH_TEST);
+		glMatrixMode(GL_PROJECTION);
+		glPopMatrix();
+		glMatrixMode(GL_MODELVIEW);
+		glPopMatrix();
 	}
-	ss << "Selected block : " << sbtype;
-	PrintText(Width() / 2 - 72, Height() / 4, ss.str());
-	ss.str("");
-	ss << " Position : " << m_player.Position(); // IMPORTANT : on utilise l ’ operateur << pour afficher la position
-	PrintText(10, 10, ss.str());
-	// Affichage de la barre d'outils
-	m_textureHotbar.Bind();
-	static const int vertHotbarSize = 100;
-	static const int horizHotbarSize = 630;
-	glLoadIdentity();
-	glTranslated(Width() / 2 - horizHotbarSize / 2, Height() / 2 - vertHotbarSize / 2 - Height() / 3, 0);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0, 0);
-	glVertex2i(0, 0);
-	glTexCoord2f(1, 0);
-	glVertex2i(horizHotbarSize, 0);
-	glTexCoord2f(1, 1);
-	glVertex2i(horizHotbarSize, vertHotbarSize);
-	glTexCoord2f(0, 1);
-	glVertex2i(0, vertHotbarSize);
-	glEnd();
-	// Affichage du crosshair
-	m_textureCrosshair.Bind();
-	static const int crossSize = 32;
-	glLoadIdentity();
-	glTranslated(Width() / 2 - crossSize / 2, Height() / 2 - crossSize / 2, 0);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0, 0);
-	glVertex2i(0, 0);
-	glTexCoord2f(1, 0);
-	glVertex2i(crossSize, 0);
-	glTexCoord2f(1, 1);
-	glVertex2i(crossSize, crossSize);
-	glTexCoord2f(0, 1);
-	glVertex2i(0, crossSize);
-	glEnd();
-	glEnable(GL_LIGHTING);
-	glDisable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
+	else
+	{
+
+	}
+
 }
 
 bool Engine::EqualWithEpsilon(float v1, float v2, float epsilon)
@@ -397,6 +421,14 @@ float Engine::GetFps()
 	return fps;
 }
 
+void Engine::GetInventory()
+{
+	m_inventory[0] = BTYPE_DIRT;
+	m_inventory[1] = BTYPE_GRASS;
+	m_inventory[2] = BTYPE_STONE;
+	m_inventory[3] = BTYPE_BRICK;
+}
+
 void Engine::KeyPressEvent(unsigned char key)
 {
 	switch (key)
@@ -408,16 +440,42 @@ void Engine::KeyPressEvent(unsigned char key)
 		m_keyD = true;
 		break;
 	case 4: // E
-		if (m_selectedBlockType <= 3)
-			m_selectedBlockType += 1;
-		else
-			m_selectedBlockType = 1;
+		m_inventoryOpen = !m_inventoryOpen;
+		break;
+	case 5: // F
 		break;
 	case 18: // S
 		m_keyS = true;
 		break;
 	case 22: // W
 		m_keyW = true;
+		break;
+	case 27: // 1
+		m_selectedBlockType = m_inventory[0];
+		break;
+	case 28: // 2
+		m_selectedBlockType = m_inventory[1];
+		break;
+	case 29: // 3
+		m_selectedBlockType = m_inventory[2];
+		break;
+	case 30: // 4
+		m_selectedBlockType = m_inventory[3];
+		break;
+	case 31: // 5
+		m_selectedBlockType = m_inventory[4];
+		break;
+	case 32: // 6
+		m_selectedBlockType = m_inventory[5];
+		break;
+	case 33: // 7
+		m_selectedBlockType = m_inventory[6];
+		break;
+	case 34: // 8
+		m_selectedBlockType = m_inventory[7];
+		break;
+	case 35: // 9
+		m_selectedBlockType = m_inventory[8];
 		break;
 	case 36: // ESC
 		Stop();
@@ -468,54 +526,63 @@ void Engine::KeyReleaseEvent(unsigned char key)
 
 void Engine::MouseMoveEvent(int x, int y)
 {
-	// Centrer la souris seulement si elle n'est pas déjà centrée
-	// Il est nécessaire de faire la vérification pour éviter de tomber
-	// dans une boucle infinie où l'appel à CenterMouse génère un
-	// MouseMoveEvent, qui rapelle CenterMouse qui rapelle un autre
-	// MouseMoveEvent, etc
-	if (x == (Width() / 2) && y == (Height() / 2))
-		return;
+	if (!m_inventoryOpen)
+	{
+		// Centrer la souris seulement si elle n'est pas déjà centrée
+		// Il est nécessaire de faire la vérification pour éviter de tomber
+		// dans une boucle infinie où l'appel à CenterMouse génère un
+		// MouseMoveEvent, qui rapelle CenterMouse qui rapelle un autre
+		// MouseMoveEvent, etc
+		if (x == (Width() / 2) && y == (Height() / 2))
+			return;
 
-	MakeRelativeToCenter(x, y);
+		MakeRelativeToCenter(x, y);
 
-	m_player.TurnLeftRight(x);
-	m_player.TurnTopBottom(y);
-	CenterMouse();
+		m_player.TurnLeftRight(x);
+		m_player.TurnTopBottom(y);
+		CenterMouse();
+	}
 }
 
 void Engine::MousePressEvent(const MOUSE_BUTTON& button, int x, int y)
 {
-	GetBlocAtCursor();
-	Vector3f pos = m_currentBlock;
-	Chunk* c = ChunkAt(pos.x, pos.y, pos.z);
-	int posx = pos.x;
-	int posy = pos.y;
-	int posz = pos.z;
-	switch (button)
+	if (!m_inventoryOpen)
 	{
-	case 1:
-		if (posx >= 0 && posy >= 0 && posz >= 0)
-			c->RemoveBlock(posx % 16, posy, posz % 16);
-		break;
-	case 4:
-		if (posx >= 0 && posy >= 0 && posz >= 0)
+		Vector3f pos = m_currentBlock;
+		Chunk* c = ChunkAt(pos.x, pos.y, pos.z);
+		int posx = pos.x;
+		int posy = pos.y;
+		int posz = pos.z;
+		switch (button)
 		{
-			if (m_currentFaceNormal.x > 0)
-				c->SetBlock((posx + 1) % 16, posy, posz % 16, m_selectedBlockType);
-			else if (m_currentFaceNormal.x < 0)
-				c->SetBlock((posx - 1) % 16, posy, posz % 16, m_selectedBlockType);
-			else if (m_currentFaceNormal.y < 0)
-				c->SetBlock(posx % 16, posy - 1, posz % 16, m_selectedBlockType);
-			else if (m_currentFaceNormal.y > 0)
-				c->SetBlock(posx % 16, posy + 1, posz % 16, m_selectedBlockType);
-			else if (m_currentFaceNormal.z > 0)
-				c->SetBlock(posx % 16, posy, (posz + 1) % 16, m_selectedBlockType);
-			else if (m_currentFaceNormal.z < 0)
-				c->SetBlock(posx % 16, posy, (posz - 1) % 16, m_selectedBlockType);
+		case 1:
+			if (posx >= 0 && posy >= 0 && posz >= 0)
+				c->RemoveBlock(posx % CHUNK_SIZE_X, posy, posz % CHUNK_SIZE_Z);
+			break;
+		case 4:
+			if (posx >= 0 && posy >= 0 && posz >= 0)
+			{
+				if (m_currentFaceNormal.x > 0)
+					c->SetBlock((posx + 1) % CHUNK_SIZE_X, posy, posz % CHUNK_SIZE_Z, m_selectedBlockType);
+				else if (m_currentFaceNormal.x < 0)
+					c->SetBlock((posx - 1) % CHUNK_SIZE_X, posy, posz % CHUNK_SIZE_Z, m_selectedBlockType);
+				else if (m_currentFaceNormal.y < 0)
+					c->SetBlock(posx % CHUNK_SIZE_X, posy - 1, posz % CHUNK_SIZE_Z, m_selectedBlockType);
+				else if (m_currentFaceNormal.y > 0)
+					c->SetBlock(posx % CHUNK_SIZE_X, posy + 1, posz % CHUNK_SIZE_Z, m_selectedBlockType);
+				else if (m_currentFaceNormal.z > 0)
+					c->SetBlock(posx % CHUNK_SIZE_X, posy, (posz + 1) % CHUNK_SIZE_Z, m_selectedBlockType);
+				else if (m_currentFaceNormal.z < 0)
+					c->SetBlock(posx % CHUNK_SIZE_X, posy, (posz - 1) % CHUNK_SIZE_Z, m_selectedBlockType);
+			}
+			break;
+		default:
+			break;
 		}
-		break;
-	default:
-		break;
+	}
+	else
+	{
+
 	}
 }
 
