@@ -48,6 +48,7 @@ private:
 	Texture m_textureBlock;
 	Texture m_textureCrosshair;
 	Texture m_textureFont;
+	Texture m_textureHotbar;
 	Shader m_shader01;
 	TextureAtlas m_textureAtlas;
 	BlockInfo* m_blockInfo[BTYPE_LAST];

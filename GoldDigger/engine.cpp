@@ -71,6 +71,7 @@ void Engine::LoadResource()
 	LoadTexture(m_textureBlock, TEXTURE_PATH "dirt.png");
 	LoadTexture(m_textureCrosshair, TEXTURE_PATH "cross.bmp");
 	LoadTexture(m_textureFont, TEXTURE_PATH "font.bmp");
+	LoadTexture(m_textureHotbar, TEXTURE_PATH "toolbar.bmp");
 
 	TextureAtlas::TextureIndex texDirtIndex = m_textureAtlas.AddTexture(TEXTURE_PATH "dirt.png");
 	float u, v, w;
@@ -223,10 +224,26 @@ void Engine::DrawHud()
 		break;
 	}
 	ss << "Selected block : " << sbtype;
-	PrintText(Width() / 2 - 72, 50, ss.str());
+	PrintText(Width() / 2 - 72, Height() / 4, ss.str());
 	ss.str("");
 	ss << " Position : " << m_player.Position(); // IMPORTANT : on utilise l ’ operateur << pour afficher la position
 	PrintText(10, 10, ss.str());
+	// Affichage de la barre d'outils
+	m_textureHotbar.Bind();
+	static const int vertHotbarSize = 100;
+	static const int horizHotbarSize = 630;
+	glLoadIdentity();
+	glTranslated(Width() / 2 - horizHotbarSize / 2, Height() / 2 - vertHotbarSize / 2 - Height() / 3, 0);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0);
+	glVertex2i(0, 0);
+	glTexCoord2f(1, 0);
+	glVertex2i(horizHotbarSize, 0);
+	glTexCoord2f(1, 1);
+	glVertex2i(horizHotbarSize, vertHotbarSize);
+	glTexCoord2f(0, 1);
+	glVertex2i(0, vertHotbarSize);
+	glEnd();
 	// Affichage du crosshair
 	m_textureCrosshair.Bind();
 	static const int crossSize = 32;
