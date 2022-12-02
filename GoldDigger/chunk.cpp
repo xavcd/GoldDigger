@@ -8,26 +8,17 @@ Chunk::Chunk(float x, float z) : m_blocks(CHUNK_SIZE_X, CHUNK_SIZE_Y, CHUNK_SIZE
 	{
 		for (int z = 0; z < CHUNK_SIZE_Z; ++z)
 		{
-			// La méthode Get accepte deux parametre ( coordonnée en X et Z) et retourne une valeur qui respecte
-			// les valeurs utilisées lors de la création de l’objet Perlin
-			// La valeur retournée est entre -1 et 1
-
-			float val = m_perlin.Get((float)(m_posx * CHUNK_SIZE_X + x) / 2000.f, (float)(m_posz * CHUNK_SIZE_Z + z) / 2000.f);
-			val = val * 10 + (CHUNK_SIZE_Y /2);
+			float val = m_perlin.Get((float)(m_posx + x) / 2000.f, (float)(m_posz + z) / 2000.f);
+			val = val * 30 + (CHUNK_SIZE_Y /2);
 
 			for (int y = 0; y < val; ++y)
 			{
 				if (y < 40)
 					SetBlock(x, y, z, BTYPE_STONE);
-				else if (y >= 40 && y < 60)
+				else if (y >= 40 && y < 50)
 					SetBlock(x, y, z, BTYPE_DIRT);
-				else if (y > 60 && y < 80)
+				else if (y > 50)
 					SetBlock(x, y, z, BTYPE_GRASS);
-
-				// Utiliser val pour déterminer la hauteur du terrain à la position x,z
-				// Vous devez vous assurer que la hauteur ne dépasse pas CHUNK_SIZE_Y
-				// Remplir les blocs du bas du terrain jusqu’à la hauteur calculée.
-				// N’hésitez pas à jouer avec la valeur retournée pour obtenir un résultat qui vous semble satisfaisant
 			}
 		}
 	}
