@@ -384,20 +384,18 @@ void Engine::GetBlocAtCursor()
 		// Find on which face of the bloc we got an hit
 		m_currentFaceNormal.Zero();
 
-		const float epsilon = 0.005f;
-
 		// Front et back:
-		if (EqualWithEpsilon((float)posZ, (float)m_currentBlock.z, epsilon))
+		if (EqualWithEpsilon((float)posZ, (float)m_currentBlock.z))
 			m_currentFaceNormal.z = -1;
-		else if (EqualWithEpsilon((float)posZ, (float)m_currentBlock.z + 1.f, epsilon))
+		else if (EqualWithEpsilon((float)posZ, (float)m_currentBlock.z + 1.f))
 			m_currentFaceNormal.z = 1;
-		else if (EqualWithEpsilon((float)posX, (float)m_currentBlock.x, epsilon))
+		else if (EqualWithEpsilon((float)posX, (float)m_currentBlock.x))
 			m_currentFaceNormal.x = -1;
-		else if (EqualWithEpsilon((float)posX, (float)m_currentBlock.x + 1.f, epsilon))
+		else if (EqualWithEpsilon((float)posX, (float)m_currentBlock.x + 1.f))
 			m_currentFaceNormal.x = 1;
-		else if (EqualWithEpsilon((float)posY, (float)m_currentBlock.y, epsilon))
+		else if (EqualWithEpsilon((float)posY, (float)m_currentBlock.y))
 			m_currentFaceNormal.y = -1;
-		else if (EqualWithEpsilon((float)posY, (float)m_currentBlock.y + 1.f, epsilon))
+		else if (EqualWithEpsilon((float)posY, (float)m_currentBlock.y + 1.f))
 			m_currentFaceNormal.y = 1;
 	}
 }
