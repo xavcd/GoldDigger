@@ -4,7 +4,7 @@
 #include <cmath>
 #include <iostream>
 
-Engine::Engine() : m_player(Vector3f(50.f, 90.f, 50.f), 0.f, 0.f), m_textureAtlas(BTYPE_LAST), m_array2d((VIEW_DISTANCE * 2) / CHUNK_SIZE_X, (VIEW_DISTANCE * 2) / CHUNK_SIZE_Z)
+Engine::Engine() : m_player(Vector3f(50.f, 67.8f, 50.f), 0.f, 0.f), m_textureAtlas(BTYPE_LAST), m_array2d((VIEW_DISTANCE * 2) / CHUNK_SIZE_X, (VIEW_DISTANCE * 2) / CHUNK_SIZE_Z)
 {
 }
 
@@ -109,6 +109,9 @@ void Engine::LoadResource()
 
 void Engine::UnloadResource()
 {
+	for (int x = 0; x < (VIEW_DISTANCE * 2) / CHUNK_SIZE_X; x++)
+		for (int z = 0; z < (VIEW_DISTANCE * 2) / CHUNK_SIZE_Z; z++)
+			delete m_array2d.Get(x, z);
 }
 
 void Engine::Render(float elapsedTime)
