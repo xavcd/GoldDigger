@@ -25,6 +25,7 @@ private:
     VertexBuffer m_vertexBuffer;
     Perlin m_perlin;
     bool m_isDirty;
+    bool m_modified;
     float m_posx;
     float m_posz;
 };

@@ -15,7 +15,7 @@ class Array3d
         T Get(int x, int y, int z) const;
 
         void Reset(T type);
-
+        T* GetPointeur();
     private:
         int To1dIndex(int x, int y, int z) const;
 
@@ -63,6 +63,12 @@ void Array3d<T>::Reset(T type)
 {
     for (int i = 0; i < m_x * m_y * m_z; ++i)
         m_blocks[i] = type;
+}
+
+template<class T>
+inline T* Array3d<T>::GetPointeur()
+{
+    return m_blocks;
 }
 
 template <class T>

@@ -1,43 +1,68 @@
 #include "chunk.h"
 #include <iostream>
+#include <fstream>
 
 Chunk::Chunk(float x, float z) : m_blocks(CHUNK_SIZE_X, CHUNK_SIZE_Y, CHUNK_SIZE_Z), m_posx(x), m_posz(z), m_perlin(16, 6, 1, 95)
 {
-	m_blocks.Reset(BTYPE_AIR);
-	for (int x = 0; x < CHUNK_SIZE_X; ++x)
-	{
-		for (int z = 0; z < CHUNK_SIZE_Z; ++z)
-		{
-			float val = m_perlin.Get((float)(m_posx + x) / 2000.f, (float)(m_posz + z) / 2000.f);
-			val = val * 30 + (CHUNK_SIZE_Y /2);
+	// Lire le fichier et comparer...
+	std::ifstream entree(std::to_string(m_posx) + "_" + std::to_string(m_posz) + ".bin", std::fstream::binary);
 
-			for (int y = 0; y < val; ++y)
+	if (entree.is_open())
+	{
+		char* data2 = new char[CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z];
+		entree.read((char*)m_blocks.GetPointeur(), CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z);
+		entree.close();
+
+		delete[] data2;
+	}
+	else
+	{
+		m_blocks.Reset(BTYPE_AIR);
+		for (int x = 0; x < CHUNK_SIZE_X; ++x)
+		{
+			for (int z = 0; z < CHUNK_SIZE_Z; ++z)
 			{
-				if (y < 40)
-					SetBlock(x, y, z, BTYPE_STONE);
-				else if (y >= 40 && y < 50)
-					SetBlock(x, y, z, BTYPE_DIRT);
-				else if (y > 50)
-					SetBlock(x, y, z, BTYPE_GRASS);
+				float val = m_perlin.Get((float)(m_posx + x) / 2000.f, (float)(m_posz + z) / 2000.f);
+				val = val * 30 + (CHUNK_SIZE_Y / 2);
+
+				for (int y = 0; y < val; ++y)
+				{
+					if (y < 40)
+						SetBlock(x, y, z, BTYPE_STONE);
+					else if (y >= 40 && y < 50)
+						SetBlock(x, y, z, BTYPE_DIRT);
+					else if (y > 50)
+						SetBlock(x, y, z, BTYPE_GRASS);
+				}
 			}
 		}
 	}
+	m_modified = false;
 }
 
 Chunk::~Chunk()
 {
+	if (m_modified)
+	{
+		std::ofstream sortie(std::to_string(m_posx) + "_" + std::to_string(m_posz) + ".bin", std::fstream::binary);
+		sortie.write((const char*)m_blocks.GetPointeur(), CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z);
+		sortie.close();
+		m_modified = false;
+	}
 }
 
 void Chunk::RemoveBlock(int x, int y, int z)
 {
 	m_blocks.Set(x, y, z, BTYPE_AIR);
 	m_isDirty = true;
+	m_modified = true;
 }
 
 void Chunk::SetBlock(int x, int y, int z, BlockType type)
 {
 	m_blocks.Set(x, y, z, type);
 	m_isDirty = true;
+	m_modified = true;
 }
 
 BlockType Chunk::GetBlock(int x, int y, int z)
@@ -84,7 +109,6 @@ void Chunk::Update(BlockInfo* blockInfo[BTYPE_LAST])
 		delete[] vd;
 	}
 	m_isDirty = false;
-
 }
 
 void Chunk::AddBlockToMesh(VertexBuffer::VertexData* vd, int& count, BlockType bt, int x, int y, int z, float u, float v, float w)
@@ -148,4 +172,3 @@ bool Chunk::IsDirty() const
 {
 	return m_isDirty;
 }
-
