@@ -9,6 +9,7 @@
 #include "textureatlas.h"
 #include "blockinfo.h"
 #include "array2d.h"
+#include "inventory.h"
 
 class Engine : public OpenglContext
 {
@@ -22,7 +23,7 @@ public:
 	virtual void Render(float elapsedTime);
 	virtual void DrawHud();
 	virtual float GetFps();
-	virtual void GetInventory();
+	virtual void StartInventory();
 	virtual void KeyPressEvent(unsigned char key);
 	virtual void KeyReleaseEvent(unsigned char key);
 	virtual void MouseMoveEvent(int x, int y);
@@ -60,8 +61,8 @@ private:
 	Array2d<Chunk*> m_array2d;
 	Vector3f m_currentBlock;
 	Vector3f m_currentFaceNormal;
-	BlockType m_selectedBlockType = BTYPE_DIRT;
-	BlockType m_inventory[29];
+	BlockType m_selectedBlockType = BTYPE_AIR;
+	BlockType m_brokenBlock;
 
 	float m_velocity = 0.0f;
 	bool m_keyW = false;
@@ -72,6 +73,7 @@ private:
 	bool m_sprint = false;
 	bool m_inventoryOpen = false;
 
+	Inventory m_inventory;
 	Player m_player;
 };
 

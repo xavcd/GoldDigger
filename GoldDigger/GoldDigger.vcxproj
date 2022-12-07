@@ -17,6 +17,7 @@
     <ClInclude Include="chunk.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="engine.h" />
+    <ClInclude Include="inventory.h" />
     <ClInclude Include="matrix4.h" />
     <ClInclude Include="openglcontext.h" />
     <ClInclude Include="perlin.h" />
@@ -33,6 +34,7 @@
     <ClCompile Include="blockinfo.cpp" />
     <ClCompile Include="chunk.cpp" />
     <ClCompile Include="engine.cpp" />
+    <ClCompile Include="inventory.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="openglcontext.cpp" />
     <ClCompile Include="perlin.cpp" />

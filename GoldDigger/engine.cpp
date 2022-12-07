@@ -105,6 +105,8 @@ void Engine::LoadResource()
 		std::cout << "Unable to generate texture atlas ..." << std::endl;
 		abort();
 	}
+
+	StartInventory();
 }
 
 void Engine::UnloadResource()
@@ -170,8 +172,6 @@ void Engine::Render(float elapsedTime)
 		pos += delta;
 		m_player.SetPosition(pos);
 	}
-
-	GetInventory();
 
 	Transformation c;
 	m_player.ApplyTransformation(c);
@@ -421,12 +421,12 @@ float Engine::GetFps()
 	return fps;
 }
 
-void Engine::GetInventory()
+void Engine::StartInventory()
 {
-	m_inventory[0] = BTYPE_DIRT;
-	m_inventory[1] = BTYPE_GRASS;
-	m_inventory[2] = BTYPE_STONE;
-	m_inventory[3] = BTYPE_BRICK;
+	//m_inventory.AddBlock(BTYPE_DIRT);
+	//m_inventory.AddBlock(BTYPE_GRASS);
+	m_inventory.AddBlock(BTYPE_STONE);
+	m_inventory.AddBlock(BTYPE_BRICK);
 }
 
 void Engine::KeyPressEvent(unsigned char key)
@@ -451,31 +451,31 @@ void Engine::KeyPressEvent(unsigned char key)
 		m_keyW = true;
 		break;
 	case 27: // 1
-		m_selectedBlockType = m_inventory[0];
+		m_selectedBlockType = m_inventory.BlockAtIndex(0);
 		break;
 	case 28: // 2
-		m_selectedBlockType = m_inventory[1];
+		m_selectedBlockType = m_inventory.BlockAtIndex(1);
 		break;
 	case 29: // 3
-		m_selectedBlockType = m_inventory[2];
+		m_selectedBlockType = m_inventory.BlockAtIndex(2);
 		break;
 	case 30: // 4
-		m_selectedBlockType = m_inventory[3];
+		m_selectedBlockType = m_inventory.BlockAtIndex(3);
 		break;
 	case 31: // 5
-		m_selectedBlockType = m_inventory[4];
+		m_selectedBlockType = m_inventory.BlockAtIndex(4);
 		break;
 	case 32: // 6
-		m_selectedBlockType = m_inventory[5];
+		m_selectedBlockType = m_inventory.BlockAtIndex(5);
 		break;
 	case 33: // 7
-		m_selectedBlockType = m_inventory[6];
+		m_selectedBlockType = m_inventory.BlockAtIndex(6);
 		break;
 	case 34: // 8
-		m_selectedBlockType = m_inventory[7];
+		m_selectedBlockType = m_inventory.BlockAtIndex(7);
 		break;
 	case 35: // 9
-		m_selectedBlockType = m_inventory[8];
+		m_selectedBlockType = m_inventory.BlockAtIndex(8);
 		break;
 	case 36: // ESC
 		Stop();
@@ -557,7 +557,12 @@ void Engine::MousePressEvent(const MOUSE_BUTTON& button, int x, int y)
 		{
 		case 1:
 			if (posx >= 0 && posy >= 0 && posz >= 0)
+			{
+				m_brokenBlock = c->GetBlock(posx % CHUNK_SIZE_X, posy, posz % CHUNK_SIZE_Z);
 				c->RemoveBlock(posx % CHUNK_SIZE_X, posy, posz % CHUNK_SIZE_Z);
+				if (!m_inventory.Contains(m_brokenBlock))
+					m_inventory.AddBlock(m_brokenBlock);
+			}
 			break;
 		case 4:
 			if (posx >= 0 && posy >= 0 && posz >= 0)
