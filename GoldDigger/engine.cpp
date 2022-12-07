@@ -245,14 +245,11 @@ void Engine::DrawHud()
 		ss << " Position : " << m_player.Position(); // IMPORTANT : on utilise l ’ operateur << pour afficher la position
 		PrintText(10, 10, ss.str());
 		// Affichage de la barre d'outils
-		switch (m_selectedBlockType)
-		{
-		default:
-			m_textureHotbar.Bind();
-			break;
-		}
+		m_textureHotbar.Bind();
 		static const int vertHotbarSize = 100;
-		static const int horizHotbarSize = 630;
+		static const int horizHotbarSize = 580;
+		static const int vertSlotSize = 40;
+		static const int horizSlotSize = 43;
 		glLoadIdentity();
 		glTranslated(Width() / 2 - horizHotbarSize / 2, Height() / 2 - vertHotbarSize / 2 - Height() / 3, 0);
 		glBegin(GL_QUADS);
@@ -280,8 +277,45 @@ void Engine::DrawHud()
 		glTexCoord2f(0, 1);
 		glVertex2i(0, crossSize);
 		glEnd();
-		glEnable(GL_LIGHTING);
+
+		// Affichage des blocks dans la barre d'outils
 		glDisable(GL_BLEND);
+		for (int i = 1; i <= 9; i++)
+		{
+			switch (m_inventory.BlockAtIndex(i - 1))
+			{
+			case BTYPE_DIRT:
+				m_textureDirt.Bind();
+				break;
+			case BTYPE_GRASS:
+				m_textureGrass.Bind();
+				break;
+			case BTYPE_STONE:
+				m_textureStone.Bind();
+				break;
+			case BTYPE_BRICK:
+				m_textureBrick.Bind();
+				break;
+			default:
+				break;
+			}
+			if (m_inventory.BlockAtIndex(i - 1) != BTYPE_AIR)
+			{
+				glLoadIdentity();
+				glTranslated((Width() / 2) - 271 + (i * (horizSlotSize + 6)), (Height() / 2 - vertHotbarSize / 2 - Height() / 3) + 30, 0);
+				glBegin(GL_QUADS);
+				glTexCoord2f(0, 0);
+				glVertex2i(0, 0);
+				glTexCoord2f(1, 0);
+				glVertex2i(horizSlotSize, 0);
+				glTexCoord2f(1, 1);
+				glVertex2i(horizSlotSize, vertSlotSize);
+				glTexCoord2f(0, 1);
+				glVertex2i(0, vertSlotSize);
+				glEnd();
+			}
+		}
+		glEnable(GL_LIGHTING);
 		glEnable(GL_DEPTH_TEST);
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
@@ -451,30 +485,39 @@ void Engine::KeyPressEvent(unsigned char key)
 		m_keyW = true;
 		break;
 	case 27: // 1
+		m_selectedToolbarSlot = 1;
 		m_selectedBlockType = m_inventory.BlockAtIndex(0);
 		break;
 	case 28: // 2
+		m_selectedToolbarSlot = 2;
 		m_selectedBlockType = m_inventory.BlockAtIndex(1);
 		break;
 	case 29: // 3
+		m_selectedToolbarSlot = 3;
 		m_selectedBlockType = m_inventory.BlockAtIndex(2);
 		break;
 	case 30: // 4
+		m_selectedToolbarSlot = 4;
 		m_selectedBlockType = m_inventory.BlockAtIndex(3);
 		break;
 	case 31: // 5
+		m_selectedToolbarSlot = 5;
 		m_selectedBlockType = m_inventory.BlockAtIndex(4);
 		break;
 	case 32: // 6
+		m_selectedToolbarSlot = 6;
 		m_selectedBlockType = m_inventory.BlockAtIndex(5);
 		break;
 	case 33: // 7
+		m_selectedToolbarSlot = 7;
 		m_selectedBlockType = m_inventory.BlockAtIndex(6);
 		break;
 	case 34: // 8
+		m_selectedToolbarSlot = 8;
 		m_selectedBlockType = m_inventory.BlockAtIndex(7);
 		break;
 	case 35: // 9
+		m_selectedToolbarSlot = 9;
 		m_selectedBlockType = m_inventory.BlockAtIndex(8);
 		break;
 	case 36: // ESC
@@ -560,8 +603,7 @@ void Engine::MousePressEvent(const MOUSE_BUTTON& button, int x, int y)
 			{
 				m_brokenBlock = c->GetBlock(posx % CHUNK_SIZE_X, posy, posz % CHUNK_SIZE_Z);
 				c->RemoveBlock(posx % CHUNK_SIZE_X, posy, posz % CHUNK_SIZE_Z);
-				if (!m_inventory.Contains(m_brokenBlock))
-					m_inventory.AddBlock(m_brokenBlock);
+				m_inventory.AddBlock(m_brokenBlock);
 			}
 			break;
 		case 4:

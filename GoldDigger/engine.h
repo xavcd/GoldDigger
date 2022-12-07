@@ -61,6 +61,7 @@ private:
 	Array2d<Chunk*> m_array2d;
 	Vector3f m_currentBlock;
 	Vector3f m_currentFaceNormal;
+	int m_selectedToolbarSlot = 1;
 	BlockType m_selectedBlockType = BTYPE_AIR;
 	BlockType m_brokenBlock;
 
