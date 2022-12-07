@@ -75,7 +75,6 @@ void Engine::LoadResource()
 	LoadTexture(m_textureStone, TEXTURE_PATH "stone.bmp");
 	LoadTexture(m_textureBrick, TEXTURE_PATH "bricks.bmp");
 	LoadTexture(m_textureGrass, TEXTURE_PATH "grass.bmp");
-	LoadTexture(m_selectedTBSlot, TEXTURE_PATH "selected.bmp");
 
 
 
@@ -322,30 +321,27 @@ void Engine::DrawHud()
 		}
 	}
 
-	glEnable(GL_BLEND);
 	// Affichage de la case qui affiche la case sélectionnée dans la barre d'outils
-	m_selectedTBSlot.Bind();
-	switch (m_selectedToolbarSlot)
-	{
-	case 1:
-		glLoadIdentity();
-		glTranslated((Width() / 2) - 271 + (m_selectedToolbarSlot * (horizSlotSize + 6)), (Height() / 2 - vertHotbarSize / 2 - Height() / 3) + 30, 0);
-		glBegin(GL_QUADS);
-		glTexCoord2f(0, 0);
-		glVertex2i(0, 0);
-		glTexCoord2f(1, 0);
-		glVertex2i(horizSlotSize, 0);
-		glTexCoord2f(1, 1);
-		glVertex2i(horizSlotSize, vertSlotSize);
-		glTexCoord2f(0, 1);
-		glVertex2i(0, vertSlotSize);
-		glEnd();
-		break;
-	default:
-		break;
-	}
+	//switch (m_selectedToolbarSlot)
+	//{
+	//case 1:
+	//	glLoadIdentity();
+	//	glTranslated((Width() / 2) - 271 + (m_selectedToolbarSlot * (horizSlotSize + 6)), (Height() / 2 - vertHotbarSize / 2 - Height() / 3) + 30, 0);
+	//	glBegin(GL_QUADS);
+	//	glTexCoord2f(0, 0);
+	//	glVertex2i(0, 0);
+	//	glTexCoord2f(1, 0);
+	//	glVertex2i(horizSlotSize, 0);
+	//	glTexCoord2f(1, 1);
+	//	glVertex2i(horizSlotSize, vertSlotSize);
+	//	glTexCoord2f(0, 1);
+	//	glVertex2i(0, vertSlotSize);
+	//	glEnd();
+	//	break;
+	//default:
+	//	break;
+	//}
 
-	glDisable(GL_BLEND);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_PROJECTION);
@@ -631,6 +627,7 @@ void Engine::MousePressEvent(const MOUSE_BUTTON& button, int x, int y)
 				m_brokenBlock = c->GetBlock(posx % CHUNK_SIZE_X, posy, posz % CHUNK_SIZE_Z);
 				c->RemoveBlock(posx % CHUNK_SIZE_X, posy, posz % CHUNK_SIZE_Z);
 				m_inventory.AddBlock(m_brokenBlock);
+				m_selectedBlockType = m_inventory.BlockAtIndex(m_selectedToolbarSlot);
 			}
 			break;
 		case 4:
