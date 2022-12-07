@@ -47,7 +47,6 @@ private:
 	bool m_wireframe = false;
 
 	Texture m_textureFloor;
-	Texture m_textureBlock;
 	Texture m_textureCrosshair;
 	Texture m_textureFont;
 	Texture m_textureHotbar;
@@ -55,6 +54,7 @@ private:
 	Texture m_textureStone;
 	Texture m_textureGrass;
 	Texture m_textureBrick;
+	Texture m_selectedTBSlot;
 	Shader m_shader01;
 	TextureAtlas m_textureAtlas;
 	BlockInfo* m_blockInfo[BTYPE_LAST];
