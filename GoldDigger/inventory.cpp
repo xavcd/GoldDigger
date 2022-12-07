@@ -34,9 +34,9 @@ void Inventory::AddBlock(BlockType block)
 			break;
 }
 
-void Inventory::RemoveBlock(int pos)
+void Inventory::RemoveFromInvent(int pos)
 {
-
+	m_inventory[pos] = BTYPE_AIR;
 }
 
 bool Inventory::Contains(BlockType block)
