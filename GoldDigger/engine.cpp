@@ -68,7 +68,6 @@ void Engine::LoadResource()
 			m_array2d.Set(x, z, new Chunk(x * CHUNK_SIZE_X, z * CHUNK_SIZE_Z));
 
 	LoadTexture(m_textureFloor, TEXTURE_PATH "grass.jpg");
-	LoadTexture(m_textureBlock, TEXTURE_PATH "dirt.png");
 	LoadTexture(m_textureCrosshair, TEXTURE_PATH "cross.bmp");
 	LoadTexture(m_textureFont, TEXTURE_PATH "font.bmp");
 	LoadTexture(m_textureHotbar, TEXTURE_PATH "toolbar.bmp");
@@ -76,6 +75,8 @@ void Engine::LoadResource()
 	LoadTexture(m_textureStone, TEXTURE_PATH "stone.bmp");
 	LoadTexture(m_textureBrick, TEXTURE_PATH "bricks.bmp");
 	LoadTexture(m_textureGrass, TEXTURE_PATH "grass.bmp");
+	LoadTexture(m_selectedTBSlot, TEXTURE_PATH "selected.bmp");
+
 
 
 
@@ -320,6 +321,31 @@ void Engine::DrawHud()
 
 		}
 	}
+
+	glEnable(GL_BLEND);
+	// Affichage de la case qui affiche la case sélectionnée dans la barre d'outils
+	m_selectedTBSlot.Bind();
+	switch (m_selectedToolbarSlot)
+	{
+	case 1:
+		glLoadIdentity();
+		glTranslated((Width() / 2) - 271 + (m_selectedToolbarSlot * (horizSlotSize + 6)), (Height() / 2 - vertHotbarSize / 2 - Height() / 3) + 30, 0);
+		glBegin(GL_QUADS);
+		glTexCoord2f(0, 0);
+		glVertex2i(0, 0);
+		glTexCoord2f(1, 0);
+		glVertex2i(horizSlotSize, 0);
+		glTexCoord2f(1, 1);
+		glVertex2i(horizSlotSize, vertSlotSize);
+		glTexCoord2f(0, 1);
+		glVertex2i(0, vertSlotSize);
+		glEnd();
+		break;
+	default:
+		break;
+	}
+
+	glDisable(GL_BLEND);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_PROJECTION);
