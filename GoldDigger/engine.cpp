@@ -201,131 +201,129 @@ void Engine::Render(float elapsedTime)
 
 void Engine::DrawHud()
 {
-	if (!m_inventoryOpen)
+	// Setter le blend function , tout ce qui sera noir sera transparent
+	glDisable(GL_LIGHTING);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	glEnable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glOrtho(0, Width(), 0, Height(), -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	// Bind de la texture pour le font
+	m_textureFont.Bind();
+	std::ostringstream ss;
+	ss << " Fps : " << GetFps();
+	PrintText(10, Height() - 25, ss.str());
+	ss.str("");
+	std::string sbtype = "";
+	switch (m_selectedBlockType)
 	{
-		// Setter le blend function , tout ce qui sera noir sera transparent
-		glDisable(GL_LIGHTING);
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-		glEnable(GL_BLEND);
-		glDisable(GL_DEPTH_TEST);
-		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
-		glLoadIdentity();
-		glOrtho(0, Width(), 0, Height(), -1, 1);
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		// Bind de la texture pour le font
-		m_textureFont.Bind();
-		std::ostringstream ss;
-		ss << " Fps : " << GetFps();
-		PrintText(10, Height() - 25, ss.str());
-		ss.str("");
-		std::string sbtype = "";
-		switch (m_selectedBlockType)
+	case 1:
+		sbtype = "Dirt";
+		break;
+	case 2:
+		sbtype = "Grass";
+		break;
+	case 3:
+		sbtype = "Stone";
+		break;
+	case 4:
+		sbtype = "Bricks";
+		break;
+	default:
+		break;
+	}
+	ss << "Selected block : " << sbtype;
+	PrintText(Width() / 2 - 85, Height() / 4, ss.str());
+	ss.str("");
+	ss << " Position : " << m_player.Position(); // IMPORTANT : on utilise l ’ operateur << pour afficher la position
+	PrintText(10, 10, ss.str());
+	// Affichage de la barre d'outils
+	m_textureHotbar.Bind();
+	static const int vertHotbarSize = 100;
+	static const int horizHotbarSize = 580;
+	static const int vertSlotSize = 40;
+	static const int horizSlotSize = 43;
+	glLoadIdentity();
+	glTranslated(Width() / 2 - horizHotbarSize / 2, Height() / 2 - vertHotbarSize / 2 - Height() / 3, 0);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0);
+	glVertex2i(0, 0);
+	glTexCoord2f(1, 0);
+	glVertex2i(horizHotbarSize, 0);
+	glTexCoord2f(1, 1);
+	glVertex2i(horizHotbarSize, vertHotbarSize);
+	glTexCoord2f(0, 1);
+	glVertex2i(0, vertHotbarSize);
+	glEnd();
+	// Affichage du crosshair
+	m_textureCrosshair.Bind();
+	static const int crossSize = 32;
+	glLoadIdentity();
+	glTranslated(Width() / 2 - crossSize / 2, Height() / 2 - crossSize / 2, 0);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0);
+	glVertex2i(0, 0);
+	glTexCoord2f(1, 0);
+	glVertex2i(crossSize, 0);
+	glTexCoord2f(1, 1);
+	glVertex2i(crossSize, crossSize);
+	glTexCoord2f(0, 1);
+	glVertex2i(0, crossSize);
+	glEnd();
+
+	// Affichage des blocks dans la barre d'outils
+	glDisable(GL_BLEND);
+	for (int i = 1; i <= 9; i++)
+	{
+		switch (m_inventory.BlockAtIndex(i - 1))
 		{
-		case 1:
-			sbtype = "Dirt";
+		case BTYPE_DIRT:
+			m_textureDirt.Bind();
 			break;
-		case 2:
-			sbtype = "Grass";
+		case BTYPE_GRASS:
+			m_textureGrass.Bind();
 			break;
-		case 3:
-			sbtype = "Stone";
+		case BTYPE_STONE:
+			m_textureStone.Bind();
 			break;
-		case 4:
-			sbtype = "Bricks";
+		case BTYPE_BRICK:
+			m_textureBrick.Bind();
 			break;
 		default:
 			break;
 		}
-		ss << "Selected block : " << sbtype;
-		PrintText(Width() / 2 - 72, Height() / 4, ss.str());
-		ss.str("");
-		ss << " Position : " << m_player.Position(); // IMPORTANT : on utilise l ’ operateur << pour afficher la position
-		PrintText(10, 10, ss.str());
-		// Affichage de la barre d'outils
-		m_textureHotbar.Bind();
-		static const int vertHotbarSize = 100;
-		static const int horizHotbarSize = 580;
-		static const int vertSlotSize = 40;
-		static const int horizSlotSize = 43;
-		glLoadIdentity();
-		glTranslated(Width() / 2 - horizHotbarSize / 2, Height() / 2 - vertHotbarSize / 2 - Height() / 3, 0);
-		glBegin(GL_QUADS);
-		glTexCoord2f(0, 0);
-		glVertex2i(0, 0);
-		glTexCoord2f(1, 0);
-		glVertex2i(horizHotbarSize, 0);
-		glTexCoord2f(1, 1);
-		glVertex2i(horizHotbarSize, vertHotbarSize);
-		glTexCoord2f(0, 1);
-		glVertex2i(0, vertHotbarSize);
-		glEnd();
-		// Affichage du crosshair
-		m_textureCrosshair.Bind();
-		static const int crossSize = 32;
-		glLoadIdentity();
-		glTranslated(Width() / 2 - crossSize / 2, Height() / 2 - crossSize / 2, 0);
-		glBegin(GL_QUADS);
-		glTexCoord2f(0, 0);
-		glVertex2i(0, 0);
-		glTexCoord2f(1, 0);
-		glVertex2i(crossSize, 0);
-		glTexCoord2f(1, 1);
-		glVertex2i(crossSize, crossSize);
-		glTexCoord2f(0, 1);
-		glVertex2i(0, crossSize);
-		glEnd();
-
-		// Affichage des blocks dans la barre d'outils
-		glDisable(GL_BLEND);
-		for (int i = 1; i <= 9; i++)
+		if (m_inventory.BlockAtIndex(i - 1) != BTYPE_AIR)
 		{
-			switch (m_inventory.BlockAtIndex(i - 1))
-			{
-			case BTYPE_DIRT:
-				m_textureDirt.Bind();
-				break;
-			case BTYPE_GRASS:
-				m_textureGrass.Bind();
-				break;
-			case BTYPE_STONE:
-				m_textureStone.Bind();
-				break;
-			case BTYPE_BRICK:
-				m_textureBrick.Bind();
-				break;
-			default:
-				break;
-			}
-			if (m_inventory.BlockAtIndex(i - 1) != BTYPE_AIR)
-			{
-				glLoadIdentity();
-				glTranslated((Width() / 2) - 271 + (i * (horizSlotSize + 6)), (Height() / 2 - vertHotbarSize / 2 - Height() / 3) + 30, 0);
-				glBegin(GL_QUADS);
-				glTexCoord2f(0, 0);
-				glVertex2i(0, 0);
-				glTexCoord2f(1, 0);
-				glVertex2i(horizSlotSize, 0);
-				glTexCoord2f(1, 1);
-				glVertex2i(horizSlotSize, vertSlotSize);
-				glTexCoord2f(0, 1);
-				glVertex2i(0, vertSlotSize);
-				glEnd();
-			}
+			glLoadIdentity();
+			glTranslated((Width() / 2) - 271 + (i * (horizSlotSize + 6)), (Height() / 2 - vertHotbarSize / 2 - Height() / 3) + 30, 0);
+			glBegin(GL_QUADS);
+			glTexCoord2f(0, 0);
+			glVertex2i(0, 0);
+			glTexCoord2f(1, 0);
+			glVertex2i(horizSlotSize, 0);
+			glTexCoord2f(1, 1);
+			glVertex2i(horizSlotSize, vertSlotSize);
+			glTexCoord2f(0, 1);
+			glVertex2i(0, vertSlotSize);
+			glEnd();
 		}
-		glEnable(GL_LIGHTING);
-		glEnable(GL_DEPTH_TEST);
-		glMatrixMode(GL_PROJECTION);
-		glPopMatrix();
-		glMatrixMode(GL_MODELVIEW);
-		glPopMatrix();
-	}
-	else
-	{
+		if (m_inventoryOpen)
+		{
 
+		}
 	}
+	glEnable(GL_LIGHTING);
+	glEnable(GL_DEPTH_TEST);
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+
 }
 
 bool Engine::EqualWithEpsilon(float v1, float v2, float epsilon)
