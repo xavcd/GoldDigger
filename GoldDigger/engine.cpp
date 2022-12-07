@@ -605,21 +605,24 @@ void Engine::MousePressEvent(const MOUSE_BUTTON& button, int x, int y)
 			}
 			break;
 		case 4:
-			if (posx >= 0 && posy >= 0 && posz >= 0)
-			{
-				if (m_currentFaceNormal.x > 0)
-					c->SetBlock((posx + 1) % CHUNK_SIZE_X, posy, posz % CHUNK_SIZE_Z, m_selectedBlockType);
-				else if (m_currentFaceNormal.x < 0)
-					c->SetBlock((posx - 1) % CHUNK_SIZE_X, posy, posz % CHUNK_SIZE_Z, m_selectedBlockType);
-				else if (m_currentFaceNormal.y < 0)
-					c->SetBlock(posx % CHUNK_SIZE_X, posy - 1, posz % CHUNK_SIZE_Z, m_selectedBlockType);
-				else if (m_currentFaceNormal.y > 0)
-					c->SetBlock(posx % CHUNK_SIZE_X, posy + 1, posz % CHUNK_SIZE_Z, m_selectedBlockType);
-				else if (m_currentFaceNormal.z > 0)
-					c->SetBlock(posx % CHUNK_SIZE_X, posy, (posz + 1) % CHUNK_SIZE_Z, m_selectedBlockType);
-				else if (m_currentFaceNormal.z < 0)
-					c->SetBlock(posx % CHUNK_SIZE_X, posy, (posz - 1) % CHUNK_SIZE_Z, m_selectedBlockType);
-			}
+			if (m_selectedBlockType != BTYPE_AIR)
+				if (posx >= 0 && posy >= 0 && posz >= 0)
+				{
+					if (m_currentFaceNormal.x > 0)
+						c->SetBlock((posx + 1) % CHUNK_SIZE_X, posy, posz % CHUNK_SIZE_Z, m_selectedBlockType);
+					else if (m_currentFaceNormal.x < 0)
+						c->SetBlock((posx - 1) % CHUNK_SIZE_X, posy, posz % CHUNK_SIZE_Z, m_selectedBlockType);
+					else if (m_currentFaceNormal.y < 0)
+						c->SetBlock(posx % CHUNK_SIZE_X, posy - 1, posz % CHUNK_SIZE_Z, m_selectedBlockType);
+					else if (m_currentFaceNormal.y > 0)
+						c->SetBlock(posx % CHUNK_SIZE_X, posy + 1, posz % CHUNK_SIZE_Z, m_selectedBlockType);
+					else if (m_currentFaceNormal.z > 0)
+						c->SetBlock(posx % CHUNK_SIZE_X, posy, (posz + 1) % CHUNK_SIZE_Z, m_selectedBlockType);
+					else if (m_currentFaceNormal.z < 0)
+						c->SetBlock(posx % CHUNK_SIZE_X, posy, (posz - 1) % CHUNK_SIZE_Z, m_selectedBlockType);
+					m_inventory.RemoveFromInvent(m_selectedToolbarSlot - 1);
+					m_selectedBlockType = BTYPE_AIR;
+				}
 			break;
 		default:
 			break;

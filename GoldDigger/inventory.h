@@ -8,7 +8,7 @@ public:
 	Inventory();
 	~Inventory();
 	void AddBlock(BlockType block);
-	void RemoveBlock(int pos);
+	void RemoveFromInvent(int pos);
 	bool Contains(BlockType block);
 	BlockType BlockAtIndex(int pos);
 

@@ -30,7 +30,7 @@ public:
 	virtual void MousePressEvent(const MOUSE_BUTTON& button, int x, int y);
 	virtual void MouseReleaseEvent(const MOUSE_BUTTON& button, int x, int y);
 	virtual void PrintText(unsigned int x, unsigned int y, const std::string& t);
-	static bool EqualWithEpsilon(float v1, float v2, float epsilon = 0.09f);
+	static bool EqualWithEpsilon(float v1, float v2, float epsilon = 0.12f);
 	static bool InRangeWithEpsilon(float v, float vinf, float vsup, float epsilon = 0.0001f);
 	virtual void GetBlocAtCursor();
 	template <class T>
