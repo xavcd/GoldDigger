@@ -222,6 +222,9 @@ void Engine::DrawHud()
 	std::string sbtype = "";
 	switch (m_selectedBlockType)
 	{
+	case 0:
+		sbtype = "None";
+		break;
 	case 1:
 		sbtype = "Dirt";
 		break;
